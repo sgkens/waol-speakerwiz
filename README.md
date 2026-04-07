@@ -1,93 +1,468 @@
-# speakerwiz
+<div align="center">
 
+<img src="https://img.shields.io/badge/speakerwiz-v0.1.0-00d4ff?style=for-the-badge&labelColor=060a0c&color=00d4ff" alt="version"/>
 
+# 🔊 speakerwiz
 
-## Getting started
+**Physics-simulated audio visualization for the web.**
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Speaker speakerwiz excursion · Waveform · EQ · Beat sequencer · Web Audio reactive
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+[![pipeline status](https://gitlab.com/YOUR_USERNAME/speakerwiz/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/YOUR_USERNAME/speakerwiz/-/pipelines)
+[![coverage report](https://gitlab.com/YOUR_USERNAME/speakerwiz/badges/main/coverage.svg?style=flat-square)](https://gitlab.com/YOUR_USERNAME/speakerwiz/-/commits/main)
+[![Latest Release](https://gitlab.com/YOUR_USERNAME/speakerwiz/-/badges/release.svg?style=flat-square)](https://gitlab.com/YOUR_USERNAME/speakerwiz/-/releases)
+[![npm @speakerwiz/core](https://img.shields.io/npm/v/@speakerwiz/core?style=flat-square&label=%40speakerwiz%2Fcore&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core)
+[![npm @speakerwiz/react](https://img.shields.io/npm/v/@speakerwiz/react?style=flat-square&label=%40speakerwiz%2Freact&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/react)
+[![License: MIT](https://img.shields.io/badge/license-MIT-00d4ff?style=flat-square&labelColor=060a0c)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-00d4ff?style=flat-square&labelColor=060a0c&logo=typescript&logoColor=00d4ff)](https://www.typescriptlang.org/)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-zero-00d4ff?style=flat-square&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-00d4ff?style=flat-square&labelColor=060a0c)](CONTRIBUTING.md)
 
-## Add your files
+</div>
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+---
+
+## Overview
+
+speakerwiz is a physics-first audio visualization library. Rather than mapping audio data directly to visual properties, it uses a **mass-spring-damper model** — the same physics that governs real speaker drivers — to simulate speakerwiz excursion, overshoot, and decay. The result is animation that feels physical and alive, not just reactive.
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/sgkens/speakerwiz.git
-git branch -M main
-git push -uf origin main
+                    impulse (beat hit)
+                          │
+                          ▼
+              ┌─────────────────────┐
+              │    SpringEngine     │  ← mass · stiffness · damping
+              │   sub · mid · hi   │
+              └────────┬────────────┘
+                       │  state.pos / state.energy
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+   SpeakerRenderer  GlowRenderer  WaveformRenderer / EQRenderer
+   (SVG excursion)  (canvas bloom)   (canvas audio data)
 ```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://gitlab.com/sgkens/speakerwiz/-/settings/integrations)
+## Packages
 
-## Collaborate with your team
+| Package | Version | Size (gzip) | Description |
+|---|---|---|---|
+| [`@speakerwiz/core`](packages/core) | [![npm](https://img.shields.io/npm/v/@speakerwiz/core?style=flat-square&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core) | ~8 kb | Physics, renderers, audio analyser — **zero dependencies** |
+| [`@speakerwiz/react`](packages/react) | [![npm](https://img.shields.io/npm/v/@speakerwiz/react?style=flat-square&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/react) | ~3 kb | React components + hooks — peer: React ≥ 18 |
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+```bash
+# Core only (vanilla JS / any framework)
+npm install @speakerwiz/core
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+# React bindings
+npm install @speakerwiz/react
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+# pnpm
+pnpm add @speakerwiz/core @speakerwiz/react
+
+# yarn
+yarn add @speakerwiz/core @speakerwiz/react
+```
+
+---
+
+## Quick Start
+
+### Drop-in React component
+
+```tsx
+import { SpeakerWiz } from '@speakerwiz/react'
+
+export function Demo() {
+  return (
+    <SpeakerWiz
+      pattern="house"
+      bpm={128}
+      theme="neon-dark"
+      waveform={{ mode: 'mirror', height: 72 }}
+      eq={{ mode: 'bars', bands: 32, height: 96, peakHold: true }}
+      autoPlay
+    />
+  )
+}
+```
+
+### Connect to a real audio source
+
+```tsx
+import { useRef } from 'react'
+import { SpeakerWiz } from '@speakerwiz/react'
+
+export function MediaPlayer({ src }: { src: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  return (
+    <>
+      <audio ref={audioRef} src={src} controls />
+      <SpeakerWiz
+        mediaRef={audioRef}
+        theme="amber-studio"
+        waveform={{ mode: 'filled', height: 80 }}
+        eq={{ mode: 'filled-curve', bands: 20, height: 100 }}
+      />
+    </>
+  )
+}
+```
+
+### Vanilla JS
+
+```ts
+import { SpeakerWiz } from '@speakerwiz/core'
+
+const viz = new SpeakerWiz(document.getElementById('viz')!, {
+  theme:    'neon-dark',
+  pattern:  'hiphop',
+  bpm:      128,
+  waveform: { mode: 'mirror', height: 72 },
+  eq:       { mode: 'bars', bands: 32, height: 96 },
+})
+
+viz.mount()
+viz.connectMedia(document.querySelector('audio')!)
+viz.play()
+
+// Manual beat trigger — MIDI, drum pads, your own sequencer
+viz.trigger({ sub: 1.0 })   // kick
+viz.trigger({ hi: 0.9 })    // hi-hat
+viz.trigger({ mid: 0.8 })   // snare
+```
+
+---
+
+## Composable Hooks
+
+Use individual pieces and wire them yourself:
+
+```tsx
+import {
+  SpeakerViz,
+  Waveform,
+  EQVisualizer,
+  useAudioAnalyser,
+  useSpeakerWizPhysics,
+} from '@speakerwiz/react'
+
+export function ComposablePlayer({ src }: { src: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+  // Web Audio — returns live typed arrays every frame
+  const { waveform, frequency, bands } = useAudioAnalyser(audioRef)
+
+  // Spring physics driven by audio band energy
+  const { state } = useSpeakerWizPhysics({ bands, sensitivity: 1.2 })
+
+  return (
+    <div>
+      <audio ref={audioRef} src={src} controls />
+      <SpeakerViz   state={state}     theme="neon-dark" showGlow />
+      <Waveform     data={waveform}   theme="neon-dark" height={72} />
+      <EQVisualizer data={frequency}  theme="neon-dark" height={96} />
+    </div>
+  )
+}
+```
+
+### Imperative handle — trigger from your own engine
+
+```tsx
+import { useRef } from 'react'
+import { SpeakerWiz, type SpeakerWizHandle } from '@speakerwiz/react'
+
+export function BeatApp() {
+  const vizRef = useRef<SpeakerWizHandle>(null)
+
+  const onKick  = () => vizRef.current?.trigger({ sub: 1.0, mid: 0.3 })
+  const onSnare = () => vizRef.current?.trigger({ mid: 0.9, hi: 0.4 })
+  const onHat   = () => vizRef.current?.trigger({ hi: 0.85 })
+
+  return <SpeakerWiz ref={vizRef} theme="neon-dark" />
+}
+```
+
+---
+
+## API Reference
+
+### `SpeakerWiz` options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `theme` | `SpeakerWizTheme \| BuiltInTheme` | `'neon-dark'` | Visual theme |
+| `pattern` | `BeatPattern \| BuiltInPattern` | `'hiphop'` | Sequencer pattern |
+| `bpm` | `number` | `128` | Beats per minute |
+| `gains` | `DriverGains` | `{sub:0.85, mid:0.7, hi:0.6}` | Per-driver amplitude |
+| `waveform` | `WaveformOptions \| false` | `{mode:'mirror'}` | Waveform config |
+| `eq` | `EQOptions \| false` | `{mode:'bars', bands:32}` | EQ config |
+| `physics` | `Partial<SpringConfig>` | `{}` | Spring tuning |
+| `autoPlay` | `boolean` | `false` | Start on mount |
+
+### `SpeakerWiz` methods
+
+```ts
+viz.mount()                            // attach to DOM
+viz.destroy()                          // full teardown + cleanup
+viz.play() / viz.pause() / viz.stop()  // sequencer transport
+viz.setBPM(bpm: number)
+viz.trigger(hit: BeatHit)              // { sub?, mid?, hi? } — 0–1
+viz.setGains(gains: Partial<DriverGains>)
+viz.setPattern(pattern)
+viz.setTheme(theme)
+viz.connectMedia(el: HTMLMediaElement)
+viz.connectAnalyser(node: AudioNode)
+viz.resize(w: number, h: number)
+viz.on('beat' | 'step' | 'play' | 'pause' | 'stop' | 'resize' | 'destroy', handler)
+```
+
+---
+
+### `SpringEngine`
+
+```ts
+import { SpringEngine } from '@speakerwiz/core'
+
+const engine = new SpringEngine({
+  sub:      { k: 280, damp: 0.62 },  // heavy, slow return
+  mid:      { k: 320, damp: 0.58 },
+  hi:       { k: 400, damp: 0.55 },  // light, fast
+  subSteps: 4,
+})
+
+engine.impulse('sub', 14)
+engine.impulseAll({ sub: 12, hi: 18 })
+
+const state = engine.step(dt)
+// state.sub.pos      → displacement  −1.2 to +1.2
+// state.sub.vel      → velocity
+// state.energy.sub   → smoothed energy  0–1
+
+engine.reset()
+engine.configure(config)
+```
+
+---
+
+### `AudioAnalyser`
+
+```ts
+import { AudioAnalyser } from '@speakerwiz/core'
+
+const analyser = new AudioAnalyser({ fftSize: 2048 })
+
+analyser.connectMedia(audioEl)
+await analyser.resume()  // call after user gesture
+
+const waveform  = analyser.getWaveform()    // Float32Array
+const frequency = analyser.getFrequency()   // Uint8Array
+
+const bands = analyser.getBands()
+// { sub, low, mid, high, air } — all 0–1
+// sub:  20–80 Hz   | low:  80–300 Hz   | mid:  300–2 kHz
+// high: 2–8 kHz    | air:  8–20 kHz
+
+const impulses = analyser.toDriverImpulses(bands, 1.0)
+engine.impulseAll(impulses)
+```
+
+---
+
+### `BeatSequencer`
+
+```ts
+import { BeatSequencer, PATTERNS } from '@speakerwiz/core'
+
+const seq = new BeatSequencer('hiphop', 128)
+
+seq.on('step', ({ index, hit, timeMs }) => {
+  // hit.s → sub  0–1
+  // hit.m → mid  0–1
+  // hit.h → hi   0–1
+})
+seq.on('beat', ({ bar, beat, timeMs }) => { /* quarter note */ })
+
+seq.play()
+seq.setBPM(140)
+seq.loadPattern(PATTERNS.techno)
+seq.tick(performance.now())  // call each rAF frame
+```
+
+---
+
+### React Hooks
+
+#### `useAudioAnalyser(mediaRef, opts?)`
+
+```ts
+const { analyser, waveform, frequency, bands, connected, resume }
+  = useAudioAnalyser(audioRef)
+```
+
+#### `useSpeakerWizPhysics(opts?)`
+
+```ts
+const { state, trigger, setGains, reset }
+  = useSpeakerWizPhysics({ bands, sensitivity: 1.2, gains: { sub: 0.9 } })
+// state.sub.pos     → speakerwiz displacement
+// state.energy.sub  → glow intensity
+```
+
+#### `useBeatSequencer(opts?)`
+
+```ts
+const { play, pause, stop, setBPM, loadPattern, currentStep, playing, bpm }
+  = useBeatSequencer({ pattern: 'techno', bpm: 132, autoPlay: true, onStep, onBeat })
+```
+
+---
+
+## Themes
+
+```ts
+import { THEMES } from '@speakerwiz/core'
+```
+
+| Name | SpeakerWiz colour | Best for |
+|---|---|---|
+| `neon-dark` | `#00d4ff` cyan | Beat apps · DJ tools |
+| `amber-studio` | `#ff8800` amber | DAW · recording |
+| `monochrome` | `#e0e0e0` white | Minimal · clean UI |
+| `vapor` | `#ff00ff` magenta | Synthwave · retro |
+
+---
+
+## Built-in Patterns
+
+| Pattern | Feel |
+|---|---|
+| `hiphop` | Kick-snare, loose 16th hi-hats |
+| `house` | 4-on-the-floor, upbeat open hat |
+| `dnb` | Amen-style broken beat |
+| `trap` | Rolling 32nd hi-hats, heavy sub |
+| `techno` | Driving 4/4 with clap |
+| `jazz` | Swung, sparse, ride-cymbal |
+| `reggaeton` | Dembow offbeat rhythm |
+| `breakbeat` | Syncopated with ghost notes |
+
+---
+
+## Performance
+
+| Technique | Detail |
+|---|---|
+| SVG transforms | `translateY` + `scale` only — zero layout thrash |
+| `will-change` | GPU layer pre-promoted on all animated groups |
+| Delta culling | DOM writes skipped when Δ < 0.0005 |
+| Physics sub-stepping | 4 substeps/frame, stable at any BPM |
+| Canvas glow | Separate composited layer, `pointer-events: none` |
+| Audio buffers | Typed arrays reused — zero heap allocs per frame |
+
+---
+
+## Repository Structure
+
+```
+speakerwiz/
+├── packages/
+│   ├── core/                       # @speakerwiz/core — zero deps
+│   │   └── src/
+│   │       ├── physics/
+│   │       │   ├── SpringEngine.ts
+│   │       │   └── BeatSequencer.ts
+│   │       ├── audio/
+│   │       │   └── AudioAnalyser.ts
+│   │       ├── renderers/
+│   │       │   ├── SpeakerRenderer.ts
+│   │       │   ├── GlowRenderer.ts
+│   │       │   ├── WaveformRenderer.ts
+│   │       │   └── EQRenderer.ts
+│   │       ├── SpeakerWiz.ts
+│   │       ├── themes.ts
+│   │       ├── types.ts
+│   │       └── index.ts
+│   │
+│   └── react/                      # @speakerwiz/react — React ≥ 18
+│       └── src/
+│           ├── SpeakerWiz.tsx
+│           ├── components.tsx
+│           ├── hooks/index.ts
+│           └── index.ts
+│
+├── demo/                           # Vite demo app
+├── USAGE_EXAMPLES.tsx
+├── ARCHITECTURE.md
+└── README.md
+```
+
+---
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```bash
+# Clone
+git clone https://gitlab.com/YOUR_USERNAME/speakerwiz.git
+cd speakerwiz
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+# Install (pnpm workspaces)
+pnpm install
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+# Dev — watch all packages
+pnpm dev
+
+# Build
+pnpm build
+
+# Type check
+pnpm typecheck
+
+# Tests
+pnpm test
+```
+
+Please open an issue before large PRs.
+
+---
+
+## Roadmap
+
+- [x] `SpringEngine` — mass-spring-damper physics
+- [x] `BeatSequencer` — BPM sequencer + 8 built-in patterns
+- [x] `AudioAnalyser` — Web Audio API, band extraction
+- [x] `SpeakerRenderer` — programmatic SVG, no assets required
+- [x] `GlowRenderer` — canvas bloom / corona / floor reflection
+- [x] `WaveformRenderer` — oscilloscope · mirror · filled
+- [x] `EQRenderer` — bars · curve · filled-curve, peak hold, log grid
+- [x] `SpeakerWiz` — full orchestrator
+- [x] `@speakerwiz/react` — `<SpeakerWiz>`, `<SpeakerViz>`, `<Waveform>`, `<EQVisualizer>`, hooks
+- [ ] Vite build config + tsconfig per package
+- [ ] Vitest unit tests
+- [ ] Web Component `<speaker-wiz>` (Vue · Svelte · plain HTML)
+- [ ] Demo app (Vite)
+- [ ] Storybook / interactive docs
+- [ ] Additional themes: `arctic`, `lava`
+- [ ] MIDI input support
+
+---
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+[MIT](LICENSE) — built for the open audio community.
+
+---
+
+<div align="center">
+
+Made with physics and neon cyan.
+
+[![@speakerwiz/core downloads](https://img.shields.io/npm/dm/@speakerwiz/core?style=flat-square&label=%40speakerwiz%2Fcore%20downloads&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core)
+[![@speakerwiz/react downloads](https://img.shields.io/npm/dm/@speakerwiz/react?style=flat-square&label=%40speakerwiz%2Freact%20downloads&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/react)
+
+</div>
