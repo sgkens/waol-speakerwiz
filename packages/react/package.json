@@ -1,0 +1,45 @@
+{
+  "name": "@speakerwiz/react",
+  "version": "0.1.0",
+  "description": "speakerwiz React bindings — components and hooks for TSX apps",
+  "license": "MIT",
+  "type": "module",
+  "main":   "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types":  "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import":  "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types":   "./dist/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks/index.js",
+      "types":  "./dist/hooks/index.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build":     "vite build && tsc --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit",
+    "test":      "vitest run",
+    "dev":       "vite build --watch"
+  },
+  "peerDependencies": {
+    "react":     ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "@speakerwiz/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "typescript":   "^5.4.0",
+    "vite":         "^5.2.0",
+    "vitest":       "^1.6.0"
+  },
+  "keywords": [
+    "react", "audio", "visualization", "speaker", "waveform",
+    "equalizer", "hooks", "tsx", "typescript", "music"
+  ]
+}
