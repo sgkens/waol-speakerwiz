@@ -270,19 +270,19 @@ export class SpeakerRenderer {
     ]))
 
     d.appendChild(this.makeRadialGrad(this.id('mid-speakerwiz'), [
-      { o:'0%',   c:'#1a1a1a' },
-      { o:'40%',  c:'#141414' },
-      { o:'80%',  c:'#0e0e0e' },
-      { o:'100%', c:'#080808' },
+      { o:'0%',   c: this.mixDark(t.speakerwiz, 0.95) },
+      { o:'40%',  c: this.mixDark(t.speakerwiz, 0.8) },
+      { o:'80%',  c: this.mixDark(t.speakerwiz, 0.6) },
+      { o:'100%', c: this.mixDark(t.speakerwiz, 0.9) },
     ]))
     d.appendChild(this.makeRadialGrad(this.id('mid-surround'), [
-      { o:'0%',   c:'#222222' },
-      { o:'100%', c:'#0c0c0c' },
+      { o:'0%',   c: this.mixDark(t.surround, 0.2) },
+      { o:'100%', c: this.mixDark(t.surround, 0.8) },
     ]))
     d.appendChild(this.makeRadialGrad(this.id('tweeter-dome'), [
-      { o:'0%',   c:'#2a3030' },
-      { o:'50%',  c:'#1a2020' },
-      { o:'100%', c:'#0c1010' },
+      { o:'0%',   c: this.mixDark(t.speakerwiz, 0.85) },
+      { o:'50%',  c: this.mixDark(t.speakerwiz, 0.95) },
+      { o:'100%', c: this.mixDark(t.speakerwiz, 0.98) },
     ], '40%','35%','60%'))
     d.appendChild(this.makeRadialGrad(this.id('vc'), [
       { o:'0%',   c:'#001218' },

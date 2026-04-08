@@ -197,7 +197,7 @@ export interface SpeakerWizOptions {
   width?:          number
   height?:         number
   theme?:          SpeakerWizTheme | BuiltInTheme
-  speaker?:        SpeakerOptions
+  speaker?:        SpeakerOptions | false
   waveform?:       WaveformOptions | false
   eq?:             EQOptions | false
   spectrogram?:    SpectrogramOptions | false

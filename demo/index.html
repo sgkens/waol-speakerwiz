@@ -101,9 +101,11 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end; /* Ground the speaker to the floor */
     padding: 20px;
+    padding-bottom: 0px; /* Keep it on the floor */
     position: relative;
+    pointer-events: none; /* Let clicks pass to controls if overlapped */
   }
 
   /* ─── ANALYSIS BOTTOM ROW ─── */
@@ -132,6 +134,8 @@
     display: flex;
     align-items: center;
     gap: 40px;
+    position: relative;
+    z-index: 100;
   }
 
   .control-group {
@@ -373,9 +377,11 @@
   };
 
   // Initial Mount
-  window.addEventListener('load', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateDisplay);
+  } else {
     updateDisplay();
-  });
+  }
 
   // Responsive handling
   let resizeTimer;

@@ -38,7 +38,7 @@ export class ParticleRenderer {
     dpr = window.devicePixelRatio ?? 1
   ) {
     this.canvas = canvas
-    this.ctx    = canvas.getContext('2d')!
+    this.ctx    = canvas.getContext('2d', { alpha: true })!
     this.opts   = { ...DEFAULTS, ...opts }
     this.theme  = theme
     this.dpr    = dpr
@@ -64,19 +64,25 @@ export class ParticleRenderer {
     const ctx = this.ctx
     const energy = state.spring.energy.sub * state.gains.sub
 
-    ctx.clearRect(0, 0, W, H)
+    // Trails effect: instead of clearRect, we draw a semi-transparent overlay
+    ctx.fillStyle = 'rgba(4, 6, 8, 0.15)' // Matches dashboard bg
+    ctx.fillRect(0, 0, W, H)
 
     for (const p of this.particles) {
       // 1. Audio Interaction
       if (this.opts.interaction === 'volume') {
-        p.vx += (Math.random() - 0.5) * energy * 2
-        p.vy += (Math.random() - 0.5) * energy * 2
+        p.vx += (Math.random() - 0.5) * energy * 3
+        p.vy += (Math.random() - 0.5) * energy * 3
       }
 
       // 2. Physics
       p.x += p.vx * this.opts.speed
       p.y += p.vy * this.opts.speed
       p.vy += this.opts.gravity
+      
+      // Air resistance / friction
+      p.vx *= 0.98
+      p.vy *= 0.98
 
       // 3. Bounds
       if (p.x < 0) { p.x = W; } else if (p.x > W) { p.x = 0; }
@@ -84,11 +90,12 @@ export class ParticleRenderer {
 
       // 4. Render
       ctx.beginPath()
-      ctx.arc(p.x, p.y, p.size * (1 + energy), 0, Math.PI * 2)
+      ctx.arc(p.x, p.y, p.size * (1 + energy * 1.5), 0, Math.PI * 2)
       ctx.fillStyle = p.color
-      ctx.globalAlpha = 0.4 + energy * 0.6
+      ctx.globalAlpha = 0.6 + energy * 0.4
       ctx.fill()
     }
+    ctx.globalAlpha = 1.0
   }
 
   resize(w: number, h: number): void {

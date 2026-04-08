@@ -125,7 +125,9 @@ export function SpeakerViz({
       running = false
       speakerRef.current?.destroy()
       glowRef.current?.destroy()
-      containerRef.current?.innerHTML = ''
+      if (containerRef.current) {
+        containerRef.current.innerHTML = ''
+      }
     }
   }, [width, height, theme, dpr])
 

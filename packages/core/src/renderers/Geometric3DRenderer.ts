@@ -60,6 +60,8 @@ export class Geometric3DRenderer {
       this.drawCube(size)
     } else if (this.opts.type === 'sphere') {
       this.drawSphere(size)
+    } else if (this.opts.type === 'torus') {
+      this.drawTorus(size)
     }
 
     ctx.restore()
@@ -103,6 +105,31 @@ export class Geometric3DRenderer {
           x: size * Math.sin(phi) * Math.cos(theta),
           y: size * Math.cos(phi),
           z: size * Math.sin(phi) * Math.sin(theta)
+        }
+        const p = this.project(this.rotate(v))
+        if (j === 0) this.ctx.moveTo(p.x, p.y)
+        else this.ctx.lineTo(p.x, p.y)
+      }
+      this.ctx.stroke()
+    }
+  }
+
+  private drawTorus(size: number): void {
+    const mainR = size
+    const tubeR = size * 0.4
+    const mainSegs = 16
+    const tubeSegs = 8
+
+    for (let i = 0; i < mainSegs; i++) {
+      const mainA = (i * Math.PI * 2) / mainSegs
+      this.ctx.beginPath()
+      for (let j = 0; j <= tubeSegs; j++) {
+        const tubeA = (j * Math.PI * 2) / tubeSegs
+        const r = mainR + tubeR * Math.cos(tubeA)
+        const v = {
+          x: r * Math.cos(mainA),
+          y: r * Math.sin(mainA),
+          z: tubeR * Math.sin(tubeA)
         }
         const p = this.project(this.rotate(v))
         if (j === 0) this.ctx.moveTo(p.x, p.y)

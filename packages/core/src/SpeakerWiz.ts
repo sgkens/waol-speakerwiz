@@ -103,6 +103,8 @@ export class SpeakerWiz {
   // Idle micro-wobble
   private idleT = 0
 
+  private resizeObserver: ResizeObserver | null = null
+
   constructor(container: HTMLElement, opts: SpeakerWizOptions = {}) {
     this.root = container
     this.opts = { ...DEFAULTS, ...opts }
@@ -128,6 +130,16 @@ export class SpeakerWiz {
     })
     this.seq.on('beat', (e) => this.emit('beat', e))
     this.seq.on('step', (e) => this.emit('step', e))
+
+    // Auto-resize
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        if (width > 0 && height > 0 && this.mounted) {
+          this.resize(width, height)
+        }
+      }
+    })
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────────
@@ -153,24 +165,26 @@ export class SpeakerWiz {
 
     // ── Stage (speaker area) ──
     this.stageEl = document.createElement('div')
-    this.stageEl.style.cssText = `position:relative;width:${W}px;height:${speakerH}px;`
+    this.stageEl.style.cssText = `position:relative;width:${W}px;height:${speakerH}px;pointer-events:none;`
 
     // SVG speaker
-    this.svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
-    this.svgEl.setAttribute('viewBox', '0 0 620 560')
-    this.svgEl.setAttribute('width',  String(W))
-    this.svgEl.setAttribute('height', String(speakerH))
-    this.svgEl.style.display = 'block'
+    if (this.opts.speaker !== false) {
+      this.svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGSVGElement
+      this.svgEl.setAttribute('viewBox', '0 0 620 560')
+      this.svgEl.setAttribute('width',  String(W))
+      this.svgEl.setAttribute('height', String(speakerH))
+      this.svgEl.style.display = 'block'
 
-    this.speaker = new SpeakerRenderer(this.svgEl, this.opts.speaker, this.theme)
-    this.stageEl.appendChild(this.svgEl)
+      this.speaker = new SpeakerRenderer(this.svgEl, this.opts.speaker as any, this.theme)
+      this.stageEl.appendChild(this.svgEl)
 
-    // Glow canvas overlay
-    this.glowCanvas = document.createElement('canvas')
-    this.glowCanvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;`
-    this.glow = new GlowRenderer(this.glowCanvas, {}, this.theme, dpr)
-    this.glow.resize(W, speakerH)
-    this.stageEl.appendChild(this.glowCanvas)
+      // Glow canvas overlay
+      this.glowCanvas = document.createElement('canvas')
+      this.glowCanvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;`
+      this.glow = new GlowRenderer(this.glowCanvas, {}, this.theme, dpr)
+      this.glow.resize(W, speakerH)
+      this.stageEl.appendChild(this.glowCanvas)
+    }
 
     // ── Particles canvas (under speaker) ──
     if (this.opts.particles !== false) {
@@ -204,7 +218,7 @@ export class SpeakerWiz {
     // ── Waveform canvas ──
     if (this.opts.waveform !== false) {
       this.waveCanvas = document.createElement('canvas')
-      this.waveCanvas.style.cssText = `display:block;width:${W}px;`
+      this.waveCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
       this.waveform = new WaveformRenderer(
         this.waveCanvas,
         this.opts.waveform as any,
@@ -218,7 +232,7 @@ export class SpeakerWiz {
     // ── EQ canvas ──
     if (this.opts.eq !== false) {
       this.eqCanvas = document.createElement('canvas')
-      this.eqCanvas.style.cssText = `display:block;width:${W}px;`
+      this.eqCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
       this.eq = new EQRenderer(
         this.eqCanvas,
         this.opts.eq as any,
@@ -232,7 +246,7 @@ export class SpeakerWiz {
     // ── Spectrogram canvas ──
     if (this.opts.spectrogram !== false) {
       this.spectroCanvas = document.createElement('canvas')
-      this.spectroCanvas.style.cssText = `display:block;width:${W}px;`
+      this.spectroCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
       this.spectrogram = new SpectrogramRenderer(
         this.spectroCanvas,
         this.opts.spectrogram as any,
@@ -254,6 +268,7 @@ export class SpeakerWiz {
   }
 
   destroy(): void {
+    this.resizeObserver?.disconnect()
     cancelAnimationFrame(this.rafId)
     this.seq.stop()
     this.analyser?.destroy()
@@ -352,6 +367,8 @@ export class SpeakerWiz {
   }
 
   resize(w: number, h: number): this {
+    if (!this.mounted) return this
+
     this.opts.width  = w
     this.opts.height = h
     const waveH = this.opts.waveform ? (this.opts.waveform as any).height ?? 72 : 0
@@ -418,7 +435,7 @@ export class SpeakerWiz {
     const renderState: RenderState = {
       spring:    state,
       gains:     this.gains,
-      waveform:  this.analyser?.isConnected ? this.analyser.getWaveform()  : undefined,
+      waveform:  this.analyser?.isConnected ? this.analyser.getWindowedWaveform() : undefined,
       frequency: this.analyser?.isConnected ? this.analyser.getFrequency() : undefined,
       bands:     this.analyser?.isConnected ? this.analyser.getBands()      : undefined,
       timestamp: now,

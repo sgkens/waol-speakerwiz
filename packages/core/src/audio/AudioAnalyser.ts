@@ -28,8 +28,9 @@ export class AudioAnalyser {
   private source:   AudioNode     | null = null
   private mediaSource: MediaElementAudioSourceNode | null = null
 
-  private freqBuffer:  Uint8Array   = new Uint8Array(0)
-  private waveBuffer:  Float32Array = new Float32Array(0)
+  private freqBuffer:   Uint8Array   = new Uint8Array(0)
+  private waveBuffer:   Float32Array = new Float32Array(0)
+  private windowBuffer: Float32Array = new Float32Array(0)
   private opts: Required<AnalyserOptions>
 
   // Smoothed band energy (exponential moving average)
@@ -83,6 +84,17 @@ export class AudioAnalyser {
     return this.waveBuffer
   }
 
+  /** Time-domain waveform with Hanning window applied */
+  getWindowedWaveform(): Float32Array {
+    const raw = this.getWaveform()
+    const out = new Float32Array(raw.length)
+    if (this.windowBuffer.length !== raw.length) return raw
+    for (let i = 0; i < raw.length; i++) {
+      out[i] = raw[i] * this.windowBuffer[i]
+    }
+    return out
+  }
+
   /** Raw frequency-domain data (0–255) */
   getFrequency(): Uint8Array {
     if (!this.analyser) return this.freqBuffer
@@ -125,7 +137,6 @@ export class AudioAnalyser {
 
   /**
    * Map band energy to driver gains for SpringEngine.
-   * sub → sub, low+mid → mid, high+air → hi
    */
   toDriverImpulses(bands: BandEnergy, sensitivity = 1.0): Partial<DriverGains> {
     return {
@@ -149,7 +160,7 @@ export class AudioAnalyser {
 
   destroy(): void {
     this.disconnectSource()
-    this.context?.close()
+    this.context?.close().catch(() => {})
     this.context  = null
     this.analyser = null
   }
@@ -170,6 +181,12 @@ export class AudioAnalyser {
     const bufLen     = this.analyser.frequencyBinCount
     this.freqBuffer  = new Uint8Array(bufLen)
     this.waveBuffer  = new Float32Array(this.opts.fftSize)
+
+    // Pre-calculate Hanning window
+    this.windowBuffer = new Float32Array(this.opts.fftSize)
+    for (let i = 0; i < this.opts.fftSize; i++) {
+      this.windowBuffer[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (this.opts.fftSize - 1)))
+    }
   }
 
   private disconnectSource(): void {
