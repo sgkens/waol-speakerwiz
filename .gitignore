@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.bun/
+bun.lock
+
+# Build outputs
+dist/
+dist-demo/
+*.tsbuildinfo
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Context Source (Project Specific)
+CONTEXT-SOURCE/
+
+# Temporary / Zip
+*.zip

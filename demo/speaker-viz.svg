@@ -1,0 +1,496 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 480" width="520" height="480" id="speaker-viz">
+  <defs>
+    <!-- Neon cyan glow filter for sub woofer -->
+    <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="neon-glow-strong" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur2"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur3"/>
+      <feMerge>
+        <feMergeNode in="blur3"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="soft-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Sub speakerwiz radial gradient - neon cyan -->
+    <radialGradient id="sub-speakerwiz-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#001a22"/>
+      <stop offset="35%" stop-color="#0a3a4a"/>
+      <stop offset="60%" stop-color="#0e5a72" stop-opacity="0.9"/>
+      <stop offset="80%" stop-color="#12a0cc"/>
+      <stop offset="95%" stop-color="#0e7a9e"/>
+      <stop offset="100%" stop-color="#082030"/>
+    </radialGradient>
+
+    <radialGradient id="sub-surround-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0a3a4a"/>
+      <stop offset="100%" stop-color="#001520"/>
+    </radialGradient>
+
+    <!-- Mid speakerwiz gradient -->
+    <radialGradient id="mid-speakerwiz-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#111"/>
+      <stop offset="50%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+
+    <!-- Cabinet gradient - dark matte -->
+    <linearGradient id="cab-grad-center" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="40%" stop-color="#252525"/>
+      <stop offset="60%" stop-color="#252525"/>
+      <stop offset="100%" stop-color="#161616"/>
+    </linearGradient>
+
+    <linearGradient id="cab-grad-side" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#111"/>
+      <stop offset="100%" stop-color="#1c1c1c"/>
+    </linearGradient>
+
+    <linearGradient id="cab-edge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#333"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+
+    <!-- Speaker rim gradient -->
+    <radialGradient id="rim-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="88%" stop-color="transparent"/>
+      <stop offset="90%" stop-color="#333"/>
+      <stop offset="95%" stop-color="#555"/>
+      <stop offset="100%" stop-color="#222"/>
+    </radialGradient>
+
+    <!-- Tweeter speakerwiz -->
+    <radialGradient id="tweeter-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#222"/>
+      <stop offset="70%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0d0d0d"/>
+    </radialGradient>
+
+    <!-- Clip path for cabinets -->
+    <clipPath id="center-cab-clip">
+      <rect x="175" y="45" width="170" height="390" rx="12"/>
+    </clipPath>
+    <clipPath id="left-cab-clip">
+      <rect x="30" y="130" width="140" height="260" rx="8"/>
+    </clipPath>
+    <clipPath id="right-cab-clip">
+      <rect x="350" y="130" width="140" height="260" rx="8"/>
+    </clipPath>
+
+    <!-- Neon cyan stroke color for sub rings -->
+    <style>
+      :root {
+        --cyan: #2ae8ff;
+        --cyan-dim: #0e7a9e;
+        --cyan-bright: #5ef5ff;
+      }
+
+      /* Beat pulse animation - controlled via JS */
+      .sub-ring { 
+        transform-origin: 260px 255px;
+        will-change: transform, opacity;
+      }
+      .sub-speakerwiz-group {
+        transform-origin: 260px 255px;
+        will-change: transform;
+      }
+      .mid-speakerwiz-group-l {
+        transform-origin: 100px 225px;
+        will-change: transform;
+      }
+      .mid-speakerwiz-group-r {
+        transform-origin: 420px 225px;
+        will-change: transform;
+      }
+      .tweeter-l {
+        transform-origin: 100px 165px;
+        will-change: transform;
+      }
+      .tweeter-r {
+        transform-origin: 420px 165px;
+        will-change: transform;
+      }
+
+      /* Idle breathing animation */
+      @keyframes sub-idle {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.004); opacity: 0.92; }
+      }
+      @keyframes ring-pulse-idle {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 0.45; }
+      }
+      @keyframes glow-breathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      .sub-speakerwiz-group { animation: sub-idle 2.8s ease-in-out infinite; }
+      .neon-ring { animation: ring-pulse-idle 2.8s ease-in-out infinite; }
+      .glow-layer { animation: glow-breathe 2.8s ease-in-out infinite; }
+
+      /* Beat hit classes applied via JS */
+      .beat-sub .sub-speakerwiz-group {
+        animation: sub-beat 0.12s ease-out forwards, sub-idle 2.8s ease-in-out 0.12s infinite;
+      }
+      .beat-sub .neon-ring {
+        animation: ring-beat 0.15s ease-out forwards, ring-pulse-idle 2.8s ease-in-out 0.15s infinite;
+      }
+      .beat-mid .mid-speakerwiz-group-l,
+      .beat-mid .mid-speakerwiz-group-r {
+        animation: mid-beat 0.1s ease-out forwards;
+      }
+      .beat-hi .tweeter-l,
+      .beat-hi .tweeter-r {
+        animation: tweeter-beat 0.08s ease-out forwards;
+      }
+
+      @keyframes sub-beat {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.018); }
+        100% { transform: scale(1); }
+      }
+      @keyframes ring-beat {
+        0% { opacity: 0.7; }
+        30% { opacity: 1; }
+        100% { opacity: 0.7; }
+      }
+      @keyframes mid-beat {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.025); }
+        100% { transform: scale(1); }
+      }
+      @keyframes tweeter-beat {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.04); }
+        100% { transform: scale(1); }
+      }
+    </style>
+  </defs>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SHADOW / GROUND                           -->
+  <!-- ══════════════════════════════════════════ -->
+  <ellipse cx="260" cy="445" rx="210" ry="18" fill="#000" opacity="0.5"/>
+  <ellipse cx="260" cy="445" rx="160" ry="10" fill="#000" opacity="0.4"/>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- LEFT SATELLITE CABINET                    -->
+  <!-- ══════════════════════════════════════════ -->
+  <!-- Cabinet body -->
+  <rect x="30" y="130" width="140" height="260" rx="8" fill="url(#cab-grad-side)" stroke="#2a2a2a" stroke-width="1.5"/>
+  <!-- Corner bolts -->
+  <circle cx="46" cy="146" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="154" cy="146" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="46" cy="374" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="154" cy="374" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <!-- Top highlight edge -->
+  <line x1="38" y1="130" x2="162" y2="130" stroke="#3a3a3a" stroke-width="1"/>
+
+  <!-- LEFT TWEETER -->
+  <g class="tweeter-l">
+    <circle cx="100" cy="165" r="22" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
+    <circle cx="100" cy="165" r="18" fill="url(#tweeter-grad)" stroke="#333" stroke-width="1"/>
+    <circle cx="100" cy="165" r="10" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+    <circle cx="100" cy="165" r="4" fill="#252525"/>
+    <!-- Surround lines -->
+    <circle cx="100" cy="165" r="14" fill="none" stroke="#222" stroke-width="1"/>
+    <circle cx="100" cy="165" r="16" fill="none" stroke="#1e1e1e" stroke-width="0.8"/>
+  </g>
+
+  <!-- LEFT MID-WOOFER -->
+  <g class="mid-speakerwiz-group-l">
+    <!-- Outer rim -->
+    <circle cx="100" cy="270" r="52" fill="#0d0d0d" stroke="#333" stroke-width="1.5"/>
+    <!-- Surround ring -->
+    <circle cx="100" cy="270" r="48" fill="none" stroke="#2a2a2a" stroke-width="3"/>
+    <!-- SpeakerWiz rings -->
+    <circle cx="100" cy="270" r="44" fill="#111" stroke="#1e1e1e" stroke-width="1"/>
+    <circle cx="100" cy="270" r="38" fill="url(#mid-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
+    <circle cx="100" cy="270" r="30" fill="#131313" stroke="#1e1e1e" stroke-width="0.8"/>
+    <circle cx="100" cy="270" r="22" fill="#101010" stroke="#1a1a1a" stroke-width="0.8"/>
+    <!-- Dust cap -->
+    <circle cx="100" cy="270" r="14" fill="#191919" stroke="#222" stroke-width="1"/>
+    <circle cx="100" cy="270" r="7" fill="#151515"/>
+    <!-- SpeakerWiz texture lines -->
+    <circle cx="100" cy="270" r="34" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+    <circle cx="100" cy="270" r="26" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+    <circle cx="100" cy="270" r="18" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- RIGHT SATELLITE CABINET                   -->
+  <!-- ══════════════════════════════════════════ -->
+  <rect x="350" y="130" width="140" height="260" rx="8" fill="url(#cab-grad-side)" stroke="#2a2a2a" stroke-width="1.5"/>
+  <circle cx="366" cy="146" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="474" cy="146" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="366" cy="374" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <circle cx="474" cy="374" r="4" fill="#1a1a1a" stroke="#444" stroke-width="1"/>
+  <line x1="358" y1="130" x2="482" y2="130" stroke="#3a3a3a" stroke-width="1"/>
+
+  <!-- RIGHT TWEETER -->
+  <g class="tweeter-r">
+    <circle cx="420" cy="165" r="22" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
+    <circle cx="420" cy="165" r="18" fill="url(#tweeter-grad)" stroke="#333" stroke-width="1"/>
+    <circle cx="420" cy="165" r="10" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+    <circle cx="420" cy="165" r="4" fill="#252525"/>
+    <circle cx="420" cy="165" r="14" fill="none" stroke="#222" stroke-width="1"/>
+    <circle cx="420" cy="165" r="16" fill="none" stroke="#1e1e1e" stroke-width="0.8"/>
+  </g>
+
+  <!-- RIGHT MID-WOOFER -->
+  <g class="mid-speakerwiz-group-r">
+    <circle cx="420" cy="270" r="52" fill="#0d0d0d" stroke="#333" stroke-width="1.5"/>
+    <circle cx="420" cy="270" r="48" fill="none" stroke="#2a2a2a" stroke-width="3"/>
+    <circle cx="420" cy="270" r="44" fill="#111" stroke="#1e1e1e" stroke-width="1"/>
+    <circle cx="420" cy="270" r="38" fill="url(#mid-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
+    <circle cx="420" cy="270" r="30" fill="#131313" stroke="#1e1e1e" stroke-width="0.8"/>
+    <circle cx="420" cy="270" r="22" fill="#101010" stroke="#1a1a1a" stroke-width="0.8"/>
+    <circle cx="420" cy="270" r="14" fill="#191919" stroke="#222" stroke-width="1"/>
+    <circle cx="420" cy="270" r="7" fill="#151515"/>
+    <circle cx="420" cy="270" r="34" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+    <circle cx="420" cy="270" r="26" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+    <circle cx="420" cy="270" r="18" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- CENTER SUB CABINET (tallest)              -->
+  <!-- ══════════════════════════════════════════ -->
+  <rect x="175" y="45" width="170" height="390" rx="12" fill="url(#cab-grad-center)" stroke="#2e2e2e" stroke-width="1.5"/>
+  <!-- Corner bolts -->
+  <circle cx="193" cy="63" r="5" fill="#1a1a1a" stroke="#444" stroke-width="1.2"/>
+  <circle cx="327" cy="63" r="5" fill="#1a1a1a" stroke="#444" stroke-width="1.2"/>
+  <circle cx="193" cy="417" r="5" fill="#1a1a1a" stroke="#444" stroke-width="1.2"/>
+  <circle cx="327" cy="417" r="5" fill="#1a1a1a" stroke="#444" stroke-width="1.2"/>
+  <!-- Panel detail lines -->
+  <line x1="183" y1="45" x2="337" y2="45" stroke="#383838" stroke-width="1.2"/>
+  <rect x="183" y="45" width="154" height="390" rx="8" fill="none" stroke="#1e1e1e" stroke-width="1" opacity="0.5"/>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- CENTER TWEETER                            -->
+  <!-- ══════════════════════════════════════════ -->
+  <g class="tweeter-l" style="--tx:260px;--ty:90px; transform-origin: 260px 90px">
+    <circle cx="260" cy="90" r="26" fill="#0e0e0e" stroke="#2a2a2a" stroke-width="1.5"/>
+    <circle cx="260" cy="90" r="21" fill="url(#tweeter-grad)" stroke="#2e2e2e" stroke-width="1"/>
+    <circle cx="260" cy="90" r="12" fill="#191919" stroke="#2a2a2a" stroke-width="1"/>
+    <circle cx="260" cy="90" r="5" fill="#222"/>
+    <circle cx="260" cy="90" r="17" fill="none" stroke="#222" stroke-width="1"/>
+    <circle cx="260" cy="90" r="19" fill="none" stroke="#1e1e1e" stroke-width="0.8"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SUB WOOFER - NEON CYAN (large)            -->
+  <!-- ══════════════════════════════════════════ -->
+
+  <!-- Outer mounting ring dark -->
+  <circle cx="260" cy="255" r="130" fill="#080e10" stroke="#0a2530" stroke-width="2"/>
+
+  <!-- Mounting bolts - 6 position -->
+  <circle cx="260" cy="128" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+  <circle cx="373" cy="193" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+  <circle cx="373" cy="317" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+  <circle cx="260" cy="382" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+  <circle cx="147" cy="317" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+  <circle cx="147" cy="193" r="5.5" fill="#0a1a20" stroke="#1a5060" stroke-width="1.2"/>
+
+  <!-- Neon bolt glow -->
+  <circle cx="260" cy="128" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+  <circle cx="373" cy="193" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+  <circle cx="373" cy="317" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+  <circle cx="260" cy="382" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+  <circle cx="147" cy="317" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+  <circle cx="147" cy="193" r="5.5" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.6" filter="url(#soft-glow)"/>
+
+  <!-- Outer surround ring neon -->
+  <circle cx="260" cy="255" r="122" fill="none" stroke="#2ae8ff" stroke-width="1.2" opacity="0.5" filter="url(#soft-glow)" class="neon-ring sub-ring"/>
+  <circle cx="260" cy="255" r="120" fill="none" stroke="#0e7a9e" stroke-width="0.8" opacity="0.8" class="neon-ring sub-ring"/>
+
+  <!-- Sub speakerwiz group - all animated together on beat -->
+  <g class="sub-speakerwiz-group">
+    <!-- Surround area fill -->
+    <circle cx="260" cy="255" r="115" fill="url(#sub-surround-grad)"/>
+
+    <!-- Surround ridge rings - neon -->
+    <circle cx="260" cy="255" r="113" fill="none" stroke="#2ae8ff" stroke-width="1.5" opacity="0.6" class="neon-ring" filter="url(#soft-glow)"/>
+    <circle cx="260" cy="255" r="108" fill="none" stroke="#0e6a8a" stroke-width="1" opacity="0.7"/>
+    <circle cx="260" cy="255" r="104" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.35" class="neon-ring"/>
+
+    <!-- SpeakerWiz body -->
+    <circle cx="260" cy="255" r="100" fill="url(#sub-speakerwiz-grad)"/>
+
+    <!-- SpeakerWiz texture rings - neon cyan -->
+    <circle cx="260" cy="255" r="98" fill="none" stroke="#2ae8ff" stroke-width="1.2" opacity="0.55" class="neon-ring" filter="url(#soft-glow)"/>
+    <circle cx="260" cy="255" r="92" fill="none" stroke="#1a90b8" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="260" cy="255" r="86" fill="none" stroke="#2ae8ff" stroke-width="1" opacity="0.45" class="neon-ring" filter="url(#soft-glow)"/>
+    <circle cx="260" cy="255" r="80" fill="none" stroke="#1580a0" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="260" cy="255" r="74" fill="none" stroke="#2ae8ff" stroke-width="0.9" opacity="0.4" class="neon-ring"/>
+    <circle cx="260" cy="255" r="68" fill="none" stroke="#1270902" stroke-width="0.7" opacity="0.5"/>
+    <circle cx="260" cy="255" r="62" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.35" class="neon-ring"/>
+    <circle cx="260" cy="255" r="56" fill="none" stroke="#0e6a8a" stroke-width="0.7" opacity="0.6"/>
+    <circle cx="260" cy="255" r="50" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.4" class="neon-ring"/>
+    <circle cx="260" cy="255" r="44" fill="none" stroke="#1580a0" stroke-width="0.6" opacity="0.5"/>
+
+    <!-- Voice coil / inner ring -->
+    <circle cx="260" cy="255" r="38" fill="#001218" stroke="#2ae8ff" stroke-width="1.5" opacity="0.9" filter="url(#soft-glow)"/>
+    <circle cx="260" cy="255" r="33" fill="#000e15" stroke="#0e5a72" stroke-width="1"/>
+    <circle cx="260" cy="255" r="28" fill="#000a10" stroke="#2ae8ff" stroke-width="1.2" opacity="0.7" filter="url(#soft-glow)"/>
+
+    <!-- Dust cap - dark center with faint glow -->
+    <circle cx="260" cy="255" r="22" fill="#000810" stroke="#0a3a4a" stroke-width="1"/>
+    <circle cx="260" cy="255" r="18" fill="#00060c"/>
+    <circle cx="260" cy="255" r="14" fill="#000408" stroke="#061820" stroke-width="0.5"/>
+
+    <!-- Glow layer overlay on speakerwiz -->
+    <circle cx="260" cy="255" r="100" fill="none" stroke="#2ae8ff" stroke-width="8" opacity="0.04" class="glow-layer" filter="url(#neon-glow-strong)"/>
+    <circle cx="260" cy="255" r="80" fill="none" stroke="#2ae8ff" stroke-width="4" opacity="0.06" class="glow-layer" filter="url(#neon-glow)"/>
+  </g>
+
+  <!-- Outer neon mounting ring glow (on top) -->
+  <circle cx="260" cy="255" r="122" fill="none" stroke="#2ae8ff" stroke-width="2" opacity="0.3" filter="url(#neon-glow)" class="neon-ring sub-ring"/>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- JS ANIMATION API                          -->
+  <!-- ══════════════════════════════════════════ -->
+  <script><![CDATA[
+    /**
+     * Speaker Visualizer - Beat Animation API
+     *
+     * Usage from your app:
+     *   const viz = document.getElementById('speaker-viz');
+     *   viz.triggerBeat({ sub: 1.0, mid: 0.7, hi: 0.4 });
+     *   viz.setIdle(true); // resume breathing animation
+     *
+     * sub/mid/hi: 0.0 – 1.0 amplitude values
+     */
+
+    (function() {
+      const svg = document.currentScript.closest('svg') || document.getElementById('speaker-viz');
+
+      const subSpeakerWiz     = svg.querySelector('.sub-speakerwiz-group');
+      const neonRings   = svg.querySelectorAll('.neon-ring');
+      const subRings    = svg.querySelectorAll('.sub-ring');
+      const midL        = svg.querySelector('.mid-speakerwiz-group-l');
+      const midR        = svg.querySelector('.mid-speakerwiz-group-r');
+      const tweeterEls  = svg.querySelectorAll('.tweeter-l, .tweeter-r');
+
+      let idleActive = true;
+      let beatFrame  = null;
+
+      // Baseline idle animations via CSS are already running.
+      // triggerBeat temporarily overrides transforms via JS,
+      // then restores to let CSS animations resume.
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function applyTransform(el, scale) {
+        el.style.transform = `scale(${scale})`;
+        el.style.transition = 'transform 0.0s';
+      }
+
+      function releaseTransform(el, duration) {
+        el.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+        el.style.transform = 'scale(1)';
+      }
+
+      function setNeonOpacity(rings, val) {
+        rings.forEach(r => {
+          r.style.opacity = val;
+        });
+      }
+
+      function triggerBeat({ sub = 0, mid = 0, hi = 0 } = {}) {
+        if (beatFrame) cancelAnimationFrame(beatFrame);
+
+        const subScale   = 1 + sub  * 0.028;
+        const midScale   = 1 + mid  * 0.032;
+        const hiScale    = 1 + hi   * 0.05;
+        const neonBright = 0.45 + sub * 0.55;
+        const ringBright = 0.3 + sub * 0.7;
+
+        // SUB
+        if (subSpeakerWiz) {
+          subSpeakerWiz.style.transition = 'none';
+          subSpeakerWiz.style.transform  = `scale(${subScale})`;
+        }
+        setNeonOpacity(neonRings, neonBright);
+        setNeonOpacity(subRings,  ringBright);
+
+        // MID
+        if (midL) { midL.style.transition = 'none'; midL.style.transform = `scale(${midScale})`; }
+        if (midR) { midR.style.transition = 'none'; midR.style.transform = `scale(${midScale})`; }
+
+        // HI
+        tweeterEls.forEach(t => {
+          t.style.transition = 'none';
+          t.style.transform  = `scale(${hiScale})`;
+        });
+
+        // Release after short attack
+        const releaseMs = 80 + (1 - sub) * 60;
+        beatFrame = requestAnimationFrame(() => {
+          beatFrame = requestAnimationFrame(() => {
+            if (subSpeakerWiz) releaseTransform(subSpeakerWiz, releaseMs + 40);
+            if (midL)    releaseTransform(midL,    releaseMs);
+            if (midR)    releaseTransform(midR,    releaseMs);
+            tweeterEls.forEach(t => releaseTransform(t, releaseMs - 20));
+            setNeonOpacity(neonRings, 0.7);
+            setNeonOpacity(subRings,  0.5);
+          });
+        });
+      }
+
+      // Expose API
+      svg.triggerBeat = triggerBeat;
+
+      // Demo auto-beat for preview
+      let demoActive = true;
+      function demoLoop() {
+        if (!demoActive) return;
+        const now = Date.now();
+        const bpm = 128;
+        const ms  = (60 / bpm) * 1000;
+        const beat = (now % ms) / ms;
+
+        if (beat < 0.05) {
+          const isKick = Math.floor(now / ms) % 2 === 0;
+          triggerBeat({
+            sub: isKick ? 0.9 : 0.3,
+            mid: isKick ? 0.5 : 0.7,
+            hi:  isKick ? 0.2 : 0.8,
+          });
+        }
+        requestAnimationFrame(demoLoop);
+      }
+
+      // Start demo preview after brief delay
+      setTimeout(() => demoLoop(), 500);
+
+      // Stop demo when external code calls triggerBeat
+      const _orig = svg.triggerBeat;
+      svg.triggerBeat = function(args) {
+        demoActive = false;
+        _orig(args);
+      };
+    })();
+  ]]></script>
+</svg>

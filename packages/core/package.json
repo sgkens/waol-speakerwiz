@@ -1,0 +1,57 @@
+{
+  "name": "@speakerwiz/core",
+  "version": "0.1.0",
+  "description": "speakerwiz core — physics, renderers, audio analyser. Zero dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "main":    "./dist/index.cjs",
+  "module":  "./dist/index.js",
+  "types":   "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import":  "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types":   "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types":  "./dist/types.d.ts"
+    },
+    "./themes": {
+      "import": "./dist/themes.js",
+      "types":  "./dist/themes.d.ts"
+    },
+    "./physics/*": {
+      "import": "./dist/physics/*.js",
+      "types":  "./dist/physics/*.d.ts"
+    },
+    "./audio/*": {
+      "import": "./dist/audio/*.js",
+      "types":  "./dist/audio/*.d.ts"
+    },
+    "./renderers/*": {
+      "import": "./dist/renderers/*.js",
+      "types":  "./dist/renderers/*.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build":     "vite build && tsc --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit",
+    "test":      "vitest run",
+    "dev":       "vite build --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite":       "^5.2.0",
+    "vitest":     "^1.6.0"
+  },
+  "keywords": [
+    "audio", "visualization", "speaker", "waveform", "equalizer",
+    "canvas", "svg", "animation", "physics", "beat", "music"
+  ],
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/YOUR_USERNAME/speakerwiz"
+  }
+}

@@ -1,93 +1,115 @@
-# speakerwiz
+<div align="center">
 
+<img src="https://img.shields.io/badge/speakerwiz-v0.1.0-00d4ff?style=for-the-badge&labelColor=060a0c&color=00d4ff" alt="version"/>
 
+# 🔊 SpeakerWiz
 
-## Getting started
+**High-Performance, Physics-Simulated Audio Visualization for the Web**
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+[![npm](https://img.shields.io/npm/v/@speakerwiz/core?style=flat-square&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core)
+[![@speakerwiz/core downloads](https://img.shields.io/npm/dm/@speakerwiz/core?style=flat-square&label=%40speakerwiz%2Fcore%20downloads&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/core)
+[![@speakerwiz/react downloads](https://img.shields.io/npm/dm/@speakerwiz/react?style=flat-square&label=%40speakerwiz%2Freact%20downloads&color=00d4ff&labelColor=060a0c)](https://www.npmjs.com/package/@speakerwiz/react)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+</div>
 
-## Add your files
+## Overview
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+**SpeakerWiz** is a professional-grade, zero-dependency audio visualization library. It models speaker cone excursion using a real-time mass-spring-damper physics engine, ensuring that visual reactions to audio feel heavy, realistic, and instantly responsive. 
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/sgkens/speakerwiz.git
-git branch -M main
-git push -uf origin main
-```
+Alongside the SVG speaker simulation, SpeakerWiz provides a suite of high-performance canvas visualizers:
+- **Time-Domain Oscillogram (Waveform)** (with Hanning windowing for crisp signals)
+- **Frequency Spectrum (EQ Bars/Curves)**
+- **Waterfall Spectrograms**
+- **Audio-Reactive Particle Systems**
+- **3D Wireframe Geometry** (Torus, Sphere, Cube)
+- **Radial & Circular Spectrum Rings**
 
-## Integrate with your tools
+All components are completely **atomic**, allowing you to render independent visualizers anywhere in the DOM without canvas overlapping or layout thrashing. 
 
-* [Set up project integrations](https://gitlab.com/sgkens/speakerwiz/-/settings/integrations)
-
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## Features
+- 🏎️ **Ultra-Fast Physics Engine:** 4 sub-steps per frame, capable of handling 200+ BPM without glitching.
+- ⚛️ **Atomic React Components:** Plug-and-play components like `<SpeakerViz />`, `<Spectrogram />`, and `<Radial />`.
+- 🎛️ **Audio & Manual Triggers:** Feed it a live `MediaElement`, an `AnalyserNode`, or manually trigger the engine via a built-in Beat Sequencer.
+- 🎨 **Theme Engine:** Switch instantly between predefined aesthetics (`neon-dark`, `vapor`, `amber-studio`, `monochrome`) or provide your own.
+- 🐳 **Dockerized Demo:** Try the full-screen dashboard locally with the included Docker setup.
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Core (Vanilla JS/TS)
+```bash
+npm i @speakerwiz/core
+# or
+bun add @speakerwiz/core
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### React
+```bash
+npm i @speakerwiz/react @speakerwiz/core
+# or
+bun add @speakerwiz/react @speakerwiz/core
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Quick Start (Vanilla)
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```typescript
+import { SpeakerWiz } from '@speakerwiz/core'
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+const root = document.getElementById('viz-container')
+const viz = new SpeakerWiz(root, {
+  theme: 'neon-dark',
+  speaker: { drivers: 3 },
+  radial: { mode: 'bars', radius: 100, innerRadius: 50 },
+  autoPlay: true,
+  bpm: 130
+})
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+viz.mount()
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## Quick Start (React)
+
+```tsx
+import { SpeakerViz, useSpeakerWizPhysics } from '@speakerwiz/react'
+
+export function MyAudioApp() {
+  const { state, trigger } = useSpeakerWizPhysics()
+
+  return (
+    <div>
+      <button onClick={() => trigger({ s: 1.0, m: 0, h: 0 })}>
+        Kick Drum
+      </button>
+      
+      <SpeakerViz state={state} width={400} height={400} theme="vapor" />
+    </div>
+  )
+}
+```
+
+## Running the Demo
+
+The repository includes a professional full-screen dashboard showcasing atomic rendering.
+
+**Via Bun:**
+```bash
+bun install
+bun dev
+```
+
+**Via Docker:**
+```bash
+docker build -t speakerwiz-demo .
+docker run -p 8080:80 speakerwiz-demo
+# Open http://localhost:8080
+```
+
+## Architecture
+
+SpeakerWiz is split into two packages:
+- `@speakerwiz/core`: Contains the `SpringEngine` (physics), `AudioAnalyser` (DSP), and vanilla renderers (`SpeakerRenderer`, `WaveformRenderer`, etc.).
+- `@speakerwiz/react`: Provides React wrappers, including atomic components and `useSpeakerWizPhysics` hooks.
+
+For a deep dive into the internal design, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT
