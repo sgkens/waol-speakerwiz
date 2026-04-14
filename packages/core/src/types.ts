@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  types.ts
-// All public types, interfaces, and enums for speakerwiz
+// @waol-speakerwiz/core  —  types.ts
+// All public types, interfaces, and enums for waol-speakerwiz
 // ─────────────────────────────────────────────────────────────────
 
 // ── Drivers ────────────────────────────────────────────────────────
@@ -101,24 +101,19 @@ export interface AnalyserOptions {
 
 export type BuiltInTheme = 'neon-dark' | 'amber-studio' | 'monochrome' | 'vapor'
 
-export interface SpeakerWizTheme {
+export interface WaolSpeakerWizTheme {
   background:      string
   cabinet:         string
   cabinetEdge:     string
   cabinetScrews:   string
   basket:          string
   surround:        string
-  speakerwiz:            string       // primary speakerwiz fill color
-  speakerwizRings:       string       // concentric ring stroke
-  speakerwizGlow:        string       // neon glow color
+  waolSpeakerwiz:            string       // primary speaker color
+  waolSpeakerwizRings:       string       // concentric ring stroke
+  waolSpeakerwizGlow:        string       // neon glow color
   dustCap:         string
   bloom:           string       // canvas glow color
   bloomIntensity:  number       // 0–1
-  waveform:        string
-  waveformGlow:    string
-  waveformFill:    string
-  eq:              string[]     // per-band or gradient stops
-  eqGlow:          string
   floorGlow:       string
 }
 
@@ -128,82 +123,19 @@ export interface SpeakerOptions {
   /** 1 = single sub only, 3 = full 3-way stack */
   drivers?:        1 | 3
   subRadius?:      number
-  speakerwizRings?:      number
+  waolSpeakerwizRings?:      number
   showScrews?:     boolean
   showPort?:       boolean
   showTweeters?:   boolean
 }
 
-export type WaveformMode = 'oscilloscope' | 'mirror' | 'filled'
-
-export interface WaveformOptions {
-  mode?:           WaveformMode
-  lineWidth?:      number
-  height?:         number
-  mirror?:         boolean
-  filled?:         boolean
-}
-
-export type EQMode = 'bars' | 'curve' | 'filled-curve'
-
-export interface EQOptions {
-  mode?:           EQMode
-  bands?:          number     // 10, 20, 32
-  height?:         number
-  showLabels?:     boolean
-  showGrid?:       boolean
-  peakHold?:       boolean
-  peakDecay?:      number     // px per frame
-  barGap?:         number
-  barRadius?:      number
-}
-
-export type SpectrogramMode = 'waterfall' | 'heatmap'
-
-export interface SpectrogramOptions {
-  mode?:           SpectrogramMode
-  height?:         number
-  speed?:          number     // pixels per frame
-  colorScale?:     string[]   // gradient stops
-}
-
-export interface ParticleOptions {
-  count?:          number
-  size?:           [number, number] // min, max
-  speed?:          number
-  colorScale?:     string[]
-  gravity?:        number
-  interaction?:    'volume' | 'frequency' | 'beat'
-}
-
-export interface Geometric3DOptions {
-  type?:           'cube' | 'sphere' | 'torus' | 'tunnel'
-  wireframe?:      boolean
-  rotationSpeed?:  number
-  sensitivity?:    number
-}
-
-export interface RadialOptions {
-  mode?:           'bars' | 'rings' | 'wave'
-  radius?:         number
-  innerRadius?:    number
-  lineWidth?:      number
-  gap?:            number
-}
-
 // ── Main Viz Options ───────────────────────────────────────────────
 
-export interface SpeakerWizOptions {
+export interface WaolSpeakerWizOptions {
   width?:          number
   height?:         number
-  theme?:          SpeakerWizTheme | BuiltInTheme
+  theme?:          WaolSpeakerWizTheme | BuiltInTheme
   speaker?:        SpeakerOptions | false
-  waveform?:       WaveformOptions | false
-  eq?:             EQOptions | false
-  spectrogram?:    SpectrogramOptions | false
-  particles?:      ParticleOptions | false
-  geometric3d?:    Geometric3DOptions | false
-  radial?:         RadialOptions | false
   physics?:        Partial<SpringConfig>
   gains?:          Partial<DriverGains>
   bpm?:            number
@@ -215,7 +147,7 @@ export interface SpeakerWizOptions {
 
 // ── Events ─────────────────────────────────────────────────────────
 
-export type SpeakerWizEventMap = {
+export type WaolSpeakerWizEventMap = {
   beat:    BeatEvent
   step:    StepEvent
   play:    void
@@ -225,8 +157,8 @@ export type SpeakerWizEventMap = {
   destroy: void
 }
 
-export type SpeakerWizEventHandler<K extends keyof SpeakerWizEventMap> =
-  (payload: SpeakerWizEventMap[K]) => void
+export type WaolSpeakerWizEventHandler<K extends keyof WaolSpeakerWizEventMap> =
+  (payload: WaolSpeakerWizEventMap[K]) => void
 
 // ── Render State ───────────────────────────────────────────────────
 

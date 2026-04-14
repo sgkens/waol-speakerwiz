@@ -1,5 +1,5 @@
 {
-  "name": "speakerwiz-demo",
+  "name": "waol-speakerwiz-demo",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -12,7 +12,7 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
-    "@speakerwiz/core": "workspace:*",
-    "@speakerwiz/react": "workspace:*"
+    "@waol-speakerwiz/core": "workspace:*",
+    "@waol-speakerwiz/react": "workspace:*"
   }
 }

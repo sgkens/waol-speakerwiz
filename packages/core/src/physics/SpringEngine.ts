@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  physics/SpringEngine.ts
-// Mass-spring-damper model for speaker speakerwiz excursion simulation
+// @waol-speakerwiz/core  —  physics/SpringEngine.ts
+// Mass-spring-damper model for speaker waol-speakerwiz excursion simulation
 // ─────────────────────────────────────────────────────────────────
 
 import type {

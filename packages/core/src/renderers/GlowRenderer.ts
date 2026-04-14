@@ -1,11 +1,11 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  renderers/GlowRenderer.ts
+// @waol-speakerwiz/core  —  renderers/GlowRenderer.ts
 // Canvas-based bloom / corona glow overlay.
 // Sits over the SVG speaker to add volumetric neon light effects
 // that SVG filters alone can't achieve at performance.
 // ─────────────────────────────────────────────────────────────────
 
-import type { SpeakerWizTheme, RenderState } from '../types'
+import type { WaolSpeakerWizTheme, RenderState } from '../types'
 
 export interface GlowOptions {
   /** SVG viewBox width the glow is calibrated against (default 620) */
@@ -16,7 +16,7 @@ export interface GlowOptions {
   subCX?: number
   /** Sub woofer center Y in viewBox coords (default 298) */
   subCY?: number
-  /** Sub woofer speakerwiz radius in viewBox coords (default 112) */
+  /** Sub woofer waol-speakerwiz radius in viewBox coords (default 112) */
   subR?: number
   /** Floor reflection Y in viewBox coords (default 536) */
   floorY?: number
@@ -35,7 +35,7 @@ export class GlowRenderer {
   private canvas: HTMLCanvasElement
   private ctx:    CanvasRenderingContext2D
   private opts:   Required<GlowOptions>
-  private theme:  SpeakerWizTheme
+  private theme:  WaolSpeakerWizTheme
   private dpr:    number
 
   // Smoothed values to prevent flicker on rapid beats
@@ -44,7 +44,7 @@ export class GlowRenderer {
   constructor(
     canvas:  HTMLCanvasElement,
     opts:    GlowOptions = {},
-    theme:   SpeakerWizTheme,
+    theme:   WaolSpeakerWizTheme,
     dpr = window.devicePixelRatio ?? 1
   ) {
     this.canvas = canvas
@@ -101,13 +101,13 @@ export class GlowRenderer {
     this.ctx.scale(dpr, dpr)
   }
 
-  setTheme(theme: SpeakerWizTheme): void { this.theme = theme }
+  setTheme(theme: WaolSpeakerWizTheme): void { this.theme = theme }
 
   destroy(): void { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) }
 
   // ── Draw passes ───────────────────────────────────────────────────
 
-  /** Radial bloom emanating from speaker speakerwiz */
+  /** Radial bloom emanating from speaker waol-speakerwiz */
   private drawCoronaGlow(
     ctx: CanvasRenderingContext2D,
     cx: number, cy: number, r: number,

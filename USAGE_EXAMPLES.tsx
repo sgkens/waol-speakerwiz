@@ -1,16 +1,16 @@
 // ─────────────────────────────────────────────────────────────────
-// speakerwiz — Usage Examples (TSX / TypeScript)
+// 'waol-speakerwiz' — Usage Examples (TSX / TypeScript)
 // Copy-paste patterns for your music app
 // ─────────────────────────────────────────────────────────────────
 
 // ══════════════════════════════════════════════════════════════════
 // 1. ALL-IN-ONE: Beat sequencer demo (no audio file needed)
 // ══════════════════════════════════════════════════════════════════
-import { SpeakerWiz } from '@speakerwiz/react'
+import { WaolSpeakerWiz } from '@'waol-speakerwiz'/react'
 
 export function BeatDemo() {
   return (
-    <SpeakerWiz
+    <WaolSpeakerWiz
       pattern="house"
       bpm={128}
       theme="neon-dark"
@@ -27,7 +27,7 @@ export function BeatDemo() {
 // 2. MEDIA PLAYER: Connect to real audio
 // ══════════════════════════════════════════════════════════════════
 import { useRef } from 'react'
-import { SpeakerWiz } from '@speakerwiz/react'
+import { WaolSpeakerWiz } from '@'waol-speakerwiz'/react'
 
 export function MediaPlayer({ src }: { src: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -35,7 +35,7 @@ export function MediaPlayer({ src }: { src: string }) {
   return (
     <div>
       <audio ref={audioRef} src={src} controls />
-      <SpeakerWiz
+      <WaolSpeakerWiz
         mediaRef={audioRef}
         theme="amber-studio"
         waveform={{ mode: 'filled', height: 80 }}
@@ -50,10 +50,10 @@ export function MediaPlayer({ src }: { src: string }) {
 // 3. BEAT APP: Manual trigger from your own sequencer
 // ══════════════════════════════════════════════════════════════════
 import { useRef } from 'react'
-import { SpeakerWiz, type SpeakerWizHandle } from '@speakerwiz/react'
+import { WaolSpeakerWiz, type WaolSpeakerWizHandle } from '@'waol-speakerwiz'/react'
 
 export function BeatApp() {
-  const vizRef = useRef<SpeakerWizHandle>(null)
+  const vizRef = useRef<WaolSpeakerWizHandle>(null)
 
   // Call this from your own beat engine
   function onKick() {
@@ -67,7 +67,7 @@ export function BeatApp() {
   }
 
   return (
-    <SpeakerWiz
+    <WaolSpeakerWiz
       ref={vizRef}
       theme="neon-dark"
       gains={{ sub: 0.9, mid: 0.7, hi: 0.6 }}
@@ -81,12 +81,12 @@ export function BeatApp() {
 // ══════════════════════════════════════════════════════════════════
 import { useRef } from 'react'
 import {
-  SpeakerViz,
+  WaolSpeakerViz,
   Waveform,
   EQVisualizer,
   useAudioAnalyser,
-  useSpeakerWizPhysics,
-} from '@speakerwiz/react'
+  useWaolSpeakerWizPhysics,
+} from '@'waol-speakerwiz'/react'
 
 export function ComposablePlayer({ src }: { src: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -95,7 +95,7 @@ export function ComposablePlayer({ src }: { src: string }) {
   const { waveform, frequency, bands } = useAudioAnalyser(audioRef)
 
   // Physics driven by live audio bands
-  const { state, setGains } = useSpeakerWizPhysics({
+  const { state, setGains } = useWaolSpeakerWizPhysics({
     bands,
     sensitivity: 1.2,
     gains: { sub: 0.9, mid: 0.7, hi: 0.6 },
@@ -106,7 +106,7 @@ export function ComposablePlayer({ src }: { src: string }) {
       <audio ref={audioRef} src={src} controls />
 
       {/* Speaker with glow */}
-      <SpeakerViz
+      <WaolSpeakerViz
         state={state}
         theme="neon-dark"
         width={620}
@@ -140,11 +140,11 @@ export function ComposablePlayer({ src }: { src: string }) {
 // ══════════════════════════════════════════════════════════════════
 // 5. VANILLA JS: No framework, direct integration
 // ══════════════════════════════════════════════════════════════════
-import { SpeakerWiz } from '@speakerwiz/core'
+import { WaolSpeakerWiz } from '@'waol-speakerwiz'/core'
 
 const container = document.getElementById('viz')!
 
-const viz = new SpeakerWiz(container, {
+const viz = new WaolSpeakerWiz(container, {
   theme:   'neon-dark',
   pattern: 'hiphop',
   bpm:     128,
@@ -176,18 +176,18 @@ viz.setBPM(140)
 // ══════════════════════════════════════════════════════════════════
 // 6. CUSTOM THEME: Match your app's brand
 // ══════════════════════════════════════════════════════════════════
-import type { SpeakerWizTheme } from '@speakerwiz/react'
+import type { WaolSpeakerWizTheme } from '@'waol-speakerwiz'/react'
 
-const myTheme: SpeakerWizTheme = {
+const myTheme: WaolSpeakerWizTheme = {
   background:      '#0a0010',
   cabinet:         '#120820',
   cabinetEdge:     '#3a1060',
   cabinetScrews:   '#2a0850',
   basket:          '#1a0830',
   surround:        '#100620',
-  speakerwiz:            '#4a0080',
-  speakerwizRings:       '#cc00ff',
-  speakerwizGlow:        '#dd22ff',
+  'waol-speakerwiz':            '#4a0080',
+  'waol-speakerwiz'Rings:       '#cc00ff',
+  'waol-speakerwiz'Glow:        '#dd22ff',
   dustCap:         '#200030',
   bloom:           '#cc00ff',
   bloomIntensity:  0.9,
@@ -200,14 +200,14 @@ const myTheme: SpeakerWizTheme = {
 }
 
 export function BrandedViz() {
-  return <SpeakerWiz theme={myTheme} pattern="vapor" autoPlay />
+  return <WaolSpeakerWiz theme={myTheme} pattern="vapor" autoPlay />
 }
 
 
 // ══════════════════════════════════════════════════════════════════
 // 7. CUSTOM BEAT PATTERN
 // ══════════════════════════════════════════════════════════════════
-import type { BeatPattern } from '@speakerwiz/react'
+import type { BeatPattern } from '@'waol-speakerwiz'/react'
 
 const myPattern: BeatPattern = {
   name: 'My Pattern',
@@ -232,5 +232,5 @@ const myPattern: BeatPattern = {
 }
 
 export function CustomPatternViz() {
-  return <SpeakerWiz pattern={myPattern} bpm={95} theme="amber-studio" autoPlay />
+  return <WaolSpeakerWiz pattern={myPattern} bpm={95} theme="amber-studio" autoPlay />
 }

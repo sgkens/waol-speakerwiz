@@ -1,12 +1,12 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/react  —  hooks/index.ts
-// React hooks: useAudioAnalyser, useSpeakerWizPhysics, useBeatSequencer
+// @waol-speakerwiz/react  —  hooks/index.ts
+// React hooks: useAudioAnalyser, useWaolSpeakerWizPhysics, useBeatSequencer
 // ─────────────────────────────────────────────────────────────────
 
 import { useRef, useState, useEffect, useCallback, useRef as useRafRef } from 'react'
-import { AudioAnalyser } from '@speakerwiz/core/audio/AudioAnalyser'
-import { SpringEngine   } from '@speakerwiz/core/physics/SpringEngine'
-import { BeatSequencer, PATTERNS } from '@speakerwiz/core/physics/BeatSequencer'
+import { AudioAnalyser } from '@waol-speakerwiz/core/audio/AudioAnalyser'
+import { SpringEngine   } from '@waol-speakerwiz/core/physics/SpringEngine'
+import { BeatSequencer, PATTERNS } from '@waol-speakerwiz/core/physics/BeatSequencer'
 import type {
   AnalyserOptions,
   SpringConfig,
@@ -18,7 +18,7 @@ import type {
   BuiltInPattern,
   StepEvent,
   BeatEvent,
-} from '@speakerwiz/core/types'
+} from '@waol-speakerwiz/core/types'
 
 // ─────────────────────────────────────────────────────────────────
 // useAudioAnalyser
@@ -85,12 +85,12 @@ export function useAudioAnalyser(
 }
 
 // ─────────────────────────────────────────────────────────────────
-// useSpeakerWizPhysics
+// useWaolSpeakerWizPhysics
 // Runs SpringEngine in a rAF loop, returns live SpringState.
 // Can be driven by AudioAnalyser bands OR manual trigger calls.
 // ─────────────────────────────────────────────────────────────────
 
-export interface SpeakerWizPhysicsOptions {
+export interface WaolSpeakerWizPhysicsOptions {
   physics?: Partial<SpringConfig>
   gains?:   Partial<DriverGains>
   /** If provided, physics are driven by these band values each frame */
@@ -98,14 +98,14 @@ export interface SpeakerWizPhysicsOptions {
   sensitivity?: number
 }
 
-export interface SpeakerWizPhysicsReturn {
+export interface WaolSpeakerWizPhysicsReturn {
   state:    SpringState
   trigger:  (hit: BeatHit) => void
   setGains: (gains: Partial<DriverGains>) => void
   reset:    () => void
 }
 
-export function useSpeakerWizPhysics(opts: SpeakerWizPhysicsOptions = {}): SpeakerWizPhysicsReturn {
+export function useWaolSpeakerWizPhysics(opts: WaolSpeakerWizPhysicsOptions = {}): WaolSpeakerWizPhysicsReturn {
   const engineRef  = useRef<SpringEngine | null>(null)
   const gainsRef   = useRef<DriverGains>({ sub: 0.8, mid: 0.7, hi: 0.6, ...opts.gains })
   const lastTRef   = useRef<number>(0)

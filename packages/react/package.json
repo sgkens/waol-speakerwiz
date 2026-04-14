@@ -1,7 +1,7 @@
 {
-  "name": "@speakerwiz/react",
+  "name": "@waol-speakerwiz/react",
   "version": "0.1.0",
-  "description": "speakerwiz React bindings — components and hooks for TSX apps",
+  "description": "waol-speakerwiz React bindings — components and hooks for TSX apps",
   "license": "MIT",
   "type": "module",
   "main":   "./dist/index.cjs",
@@ -30,7 +30,7 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@speakerwiz/core": "workspace:*"
+    "@waol-speakerwiz/core": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

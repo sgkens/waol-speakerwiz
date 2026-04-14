@@ -1,24 +1,24 @@
-# 🔊 SpeakerWiz (React)
+# 🔊 WaolSpeakerWiz (React)
 
 **High-Performance, Physics-Simulated Audio Visualization for the Web**
 
-This package provides atomic React components and hooks for SpeakerWiz.
+This package provides atomic React components and hooks for WaolSpeakerWiz.
 
 ## Installation
 
 ```bash
-npm i @speakerwiz/react @speakerwiz/core
+npm i @waol-speakerwiz/react @waol-speakerwiz/core
 # or
-bun add @speakerwiz/react @speakerwiz/core
+bun add @waol-speakerwiz/react @waol-speakerwiz/core
 ```
 
 ## Quick Start
 
 ```tsx
-import { SpeakerViz, useSpeakerWizPhysics } from '@speakerwiz/react'
+import { WaolSpeakerViz, useWaolSpeakerWizPhysics } from '@waol-speakerwiz/react'
 
 export function MyAudioApp() {
-  const { state, trigger } = useSpeakerWizPhysics()
+  const { state, trigger } = useWaolSpeakerWizPhysics()
 
   return (
     <div>
@@ -26,14 +26,14 @@ export function MyAudioApp() {
         Kick Drum
       </button>
       
-      <SpeakerViz state={state} width={400} height={400} theme="vapor" />
+      <WaolSpeakerViz state={state} width={400} height={400} theme="vapor" />
     </div>
   )
 }
 ```
 
 ## Available Components
-- `<SpeakerViz />`
+- `<WaolSpeakerViz />`
 - `<Waveform />`
 - `<EQVisualizer />`
 - `<Spectrogram />`

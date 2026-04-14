@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SpeakerWiz Pro — High-Performance Audio Engine</title>
+<title>WAOL-SpeakerWiz Pro — Physics-Engine Speaker Visualization</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Syncopate:wght@700&display=swap');
 
@@ -12,419 +12,258 @@
     --panel: #0a1218;
     --panel-border: rgba(0, 212, 255, 0.15);
     --neon: #00d4ff;
-    --neon-dim: #004466;
     --text: #e0f0ff;
-    --header-height: 60px;
-    --footer-height: 30px;
-    --controls-height: 140px;
+    --sidebar-width: 320px;
   }
 
   * { box-sizing: border-box; }
-
   body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: 'Inter', sans-serif; width: 100vw; height: 100vh;
+    overflow: hidden; display: flex; flex-direction: column;
   }
 
-  /* ─── HEADER ─── */
   header {
-    height: var(--header-height);
-    padding: 0 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--panel-border);
-    background: rgba(10, 18, 24, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 100;
+    height: 60px; padding: 0 30px; display: flex; justify-content: space-between;
+    align-items: center; border-bottom: 1px solid var(--panel-border);
+    background: rgba(10, 18, 24, 0.8); backdrop-filter: blur(10px); z-index: 100;
   }
+  .logo { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; letter-spacing: 0.3rem; color: var(--neon); }
 
-  .logo {
-    font-family: 'Syncopate', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.3rem;
-    color: var(--neon);
-    text-shadow: 0 0 15px rgba(0,212,255,0.3);
+  main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ─── MAIN STAGE ─── */
+  .stage-area {
+    flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at 50% 100%, #0c1a24 0%, #040608 100%);
+    position: relative; align-items: center; justify-content: center; padding-bottom: 40px;
   }
+  .main-viz { width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
 
-  .status-tag {
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: rgba(0, 212, 255, 0.1);
-    color: var(--neon);
-    border: 1px solid var(--neon);
-    text-transform: uppercase;
+  /* ─── SIDEBAR WIDGETS ─── */
+  .sidebar {
+    width: var(--sidebar-width); border-left: 1px solid var(--panel-border);
+    background: var(--panel); display: flex; flex-direction: column; gap: 1px; overflow-y: auto;
   }
-
-  /* ─── MAIN DASHBOARD ─── */
-  main {
-    flex: 1;
-    display: flex;
-    gap: 1px;
-    background: var(--panel-border);
-    overflow: hidden;
+  .widget {
+    padding: 20px; background: var(--bg); transition: all 0.2s; cursor: pointer;
+    border-bottom: 1px solid var(--panel-border); position: relative;
   }
+  .widget:hover { background: rgba(255,255,255,0.02); }
+  .widget.active { border-left: 4px solid var(--neon); background: rgba(0,212,255,0.05); }
+  .widget-title { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; opacity: 0.4; margin-bottom: 10px; letter-spacing: 0.1rem; }
+  .mini-viz { width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; pointer-events: none; }
 
-  .col {
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .col-speaker { flex: 1; min-width: 400px; }
-  .col-effects { flex: 1.2; min-width: 400px; }
-
-  .col-header {
-    padding: 12px 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.1rem;
-    text-transform: uppercase;
-    opacity: 0.5;
-    background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid var(--panel-border);
-  }
-
-  .viz-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* Ground the speaker to the floor */
-    padding: 20px;
-    padding-bottom: 0px; /* Keep it on the floor */
-    position: relative;
-    pointer-events: none; /* Let clicks pass to controls if overlapped */
-  }
-
-  /* ─── ANALYSIS BOTTOM ROW ─── */
-  .row-analysis {
-    height: 180px;
-    background: var(--bg);
-    border-top: 1px solid var(--panel-border);
-    display: flex;
-    gap: 1px;
-    background: var(--panel-border);
-  }
-
-  .analysis-unit {
-    flex: 1;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-  }
+  /* ─── CUSTOMIZER ─── */
+  .customizer { padding: 25px; background: #000; display: flex; flex-direction: column; gap: 15px; }
+  .color-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; }
+  input[type=color] { border: none; width: 30px; height: 30px; background: none; cursor: pointer; }
 
   /* ─── CONTROLS ─── */
   .controls-bar {
-    height: var(--controls-height);
-    background: var(--panel);
-    border-top: 1px solid var(--panel-border);
-    padding: 20px 30px;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    position: relative;
-    z-index: 100;
+    height: 100px; background: var(--panel); border-top: 1px solid var(--panel-border);
+    padding: 0 40px; display: flex; align-items: center; gap: 50px;
   }
-
-  .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .control-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    opacity: 0.4;
-  }
-
-  .btn-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .btn:hover { background: rgba(0,212,255,0.15); border-color: var(--neon); }
-  .btn.active {
-    background: var(--neon);
-    color: #000;
-    border-color: var(--neon);
-    box-shadow: 0 0 15px rgba(0,212,255,0.4);
-  }
-
   .play-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--neon);
-    color: #000;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 0 25px rgba(0,212,255,0.3);
-    flex-shrink: 0;
+    width: 50px; height: 50px; border-radius: 50%; background: var(--neon); color: #000;
+    border: none; font-size: 1.2rem; cursor: pointer; box-shadow: 0 0 20px rgba(0,212,255,0.3);
   }
-
-  .slider-box {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 200px;
-  }
-
+  .control-group { display: flex; flex-direction: column; gap: 8px; }
+  .label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; opacity: 0.4; }
+  .slider-box { display: flex; align-items: center; gap: 12px; min-width: 180px; }
   input[type=range] { flex: 1; accent-color: var(--neon); }
+  .val-disp { font-family: 'Syncopate', sans-serif; color: var(--neon); font-size: 0.9rem; min-width: 35px; }
 
-  .bpm-val {
-    font-family: 'Syncopate', sans-serif;
-    color: var(--neon);
-    font-size: 1.2rem;
-    min-width: 45px;
-  }
+  footer { height: 24px; background: #000; font-size: 0.55rem; display: flex; align-items: center; padding: 0 30px; opacity: 0.2; }
 
-  footer {
-    height: var(--footer-height);
-    background: #000;
-    font-size: 0.6rem;
-    display: flex;
-    align-items: center;
-    padding: 0 30px;
-    opacity: 0.3;
-    letter-spacing: 0.1rem;
-  }
-
-  /* Make canvases responsive */
-  canvas { width: 100% !important; height: 100% !important; display: block; }
-  svg { max-width: 100%; max-height: 100%; }
-
+  canvas, svg { max-width: 100%; max-height: 100%; display: block; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">SPEAKERWIZ <span style="font-weight:300; font-size:0.8rem; opacity:0.5;">CORE</span></div>
-  <div class="status-tag">Release v0.1.0 Ready</div>
+  <div class="logo">WAOL-SPEAKERWIZ <span style="font-weight:300; font-size:0.7rem; opacity:0.5;">v0.1.0</span></div>
+  <div style="font-size:0.6rem; opacity:0.4; font-weight:800;">PRO PHYSICS ENGINE // ATOMIC RENDERING</div>
 </header>
 
 <main>
-  <!-- Column 1: Speaker Driver -->
-  <div class="col col-speaker">
-    <div class="col-header">01 // Driver Physics</div>
-    <div class="viz-container" id="speaker-root"></div>
+  <div class="stage-area">
+    <div class="main-viz" id="main-root"></div>
   </div>
 
-  <!-- Column 2: Selected Effect -->
-  <div class="col col-effects">
-    <div class="col-header">02 // Visualization Effect: <span id="effect-name" style="color:var(--neon)">Particles</span></div>
-    <div class="viz-container" id="effect-root"></div>
+  <div class="sidebar">
+    <div class="widget active" data-theme="neon-dark">
+      <div class="widget-title">Preset: Neon Dark</div>
+      <div class="mini-viz" id="mini-neon-dark"></div>
+    </div>
+    <div class="widget" data-theme="vapor">
+      <div class="widget-title">Preset: Vapor</div>
+      <div class="mini-viz" id="mini-vapor"></div>
+    </div>
+    <div class="widget" data-theme="amber-studio">
+      <div class="widget-title">Preset: Amber Studio</div>
+      <div class="mini-viz" id="mini-amber-studio"></div>
+    </div>
+    <div class="widget" data-theme="monochrome">
+      <div class="widget-title">Preset: Monochrome</div>
+      <div class="mini-viz" id="mini-monochrome"></div>
+    </div>
+
+    <div class="customizer">
+      <div class="widget-title" style="margin-bottom:5px">Theme Customizer</div>
+      <div class="color-row">
+        <span>SPEAKER CORE</span>
+        <input type="color" id="col-core" value="#005a78">
+      </div>
+      <div class="color-row">
+        <span>NEON RINGS</span>
+        <input type="color" id="col-rings" value="#00d4ff">
+      </div>
+      <div class="color-row">
+        <span>GLOW / BLOOM</span>
+        <input type="color" id="col-glow" value="#00d4ff">
+      </div>
+    </div>
   </div>
 </main>
-
-<div class="row-analysis">
-  <div class="analysis-unit" style="flex: 1.5;">
-    <div class="col-header">03 // Time-Domain Oscillogram</div>
-    <div class="viz-container" id="wave-root"></div>
-  </div>
-  <div class="analysis-unit">
-    <div class="col-header">04 // Frequency Spectrum</div>
-    <div class="viz-container" id="eq-root"></div>
-  </div>
-</div>
 
 <div class="controls-bar">
   <button class="play-btn" id="play-btn">▶</button>
 
   <div class="control-group">
-    <div class="control-label">Effect Selection</div>
-    <div class="btn-row">
-      <button class="btn active" data-effect="particles">Particles</button>
-      <button class="btn" data-effect="radial">Radial</button>
-      <button class="btn" data-effect="geometric3d">Geometric 3D</button>
-      <button class="btn" data-effect="spectrogram">Spectrogram</button>
+    <div class="label">Pattern Engine</div>
+    <div style="display:flex; gap:8px">
+      <select id="pattern-select" style="background:#000; color:#fff; border:1px solid #333; padding:5px; font-size:0.7rem;">
+        <option value="hiphop">Hip Hop</option>
+        <option value="house">House</option>
+        <option value="dnb">D&B</option>
+        <option value="techno">Techno</option>
+      </select>
     </div>
   </div>
 
   <div class="control-group">
-    <div class="control-label">Pattern Engine</div>
-    <div class="btn-row">
-      <button class="btn active" data-pattern="hiphop">Hip Hop</button>
-      <button class="btn" data-pattern="house">House</button>
-      <button class="btn" data-pattern="dnb">D&B</button>
-      <button class="btn" data-pattern="techno">Techno</button>
+    <div class="label">BPM: <span class="val-disp" id="bpm-val">128</span></div>
+    <div class="slider-box">
+      <input type="range" id="bpm-slider" min="60" max="220" value="128"/>
     </div>
   </div>
 
   <div class="control-group" style="flex:1">
-    <div class="control-label">Engine Master Controls</div>
+    <div class="label">Master Physics Gain: <span class="val-disp" id="gain-val">80%</span></div>
     <div class="slider-box">
-      <span class="label" style="font-size:0.7rem; opacity:0.5;">BPM</span>
-      <div class="bpm-val" id="bpm-disp">128</div>
-      <input type="range" id="bpm-slider" min="60" max="200" value="128"/>
-      
-      <div style="width: 40px;"></div>
-
-      <span class="label" style="font-size:0.7rem; opacity:0.5;">GAIN</span>
-      <input type="range" id="gain-slider" min="0" max="100" value="80"/>
+      <input type="range" id="gain-slider" min="0" max="120" value="80"/>
     </div>
   </div>
 </div>
 
 <footer>
-  ESTABLISHED 2026 // HIGH-PERFORMANCE AUDIO SIMULATION // CANVAS-ACCELERATED
+  © 2026 WAOL-SPEAKERWIZ // HIGH-FIDELITY AUDIO DRIVER SIMULATION // MIT LICENSE
 </footer>
 
 <script type="module">
-  import { SpeakerWiz } from '../packages/core/src/index.ts';
+  import { WaolSpeakerWiz, THEMES } from '../packages/core/src/index.ts';
 
-  // Containers
-  const roots = {
-    speaker: document.getElementById('speaker-root'),
-    effect:  document.getElementById('effect-root'),
-    wave:    document.getElementById('wave-root'),
-    eq:      document.getElementById('eq-root')
-  };
+  const mainRoot = document.getElementById('main-root');
+  let mainViz = null;
+  let minis = [];
+  let currentThemeKey = 'neon-dark';
 
-  let activeEffect = 'particles';
-  let instances = [];
-
-  const getCommonOptions = () => ({
-    theme: 'neon-dark',
-    autoPlay: false,
-    bpm: parseInt(document.getElementById('bpm-slider').value),
-    devicePixelRatio: window.devicePixelRatio || 1
-  });
-
-  const updateDisplay = () => {
-    // Cleanup
-    instances.forEach(i => i.destroy());
-    instances = [];
-    Object.values(roots).forEach(r => r.innerHTML = '');
-
-    const common = getCommonOptions();
-    const gain = parseInt(document.getElementById('gain-slider').value) / 100;
-    const pattern = document.querySelector('[data-pattern].active').dataset.pattern;
+  const updateMain = () => {
+    if (mainViz) mainViz.destroy();
     const isPlaying = document.getElementById('play-btn').textContent === '⏸';
+    const bpm = parseInt(document.getElementById('bpm-slider').value);
+    const gain = parseInt(document.getElementById('gain-slider').value) / 100;
+    const pattern = document.getElementById('pattern-select').value;
 
-    // 1. Speaker Driver (Standalone)
-    const iSpeaker = new SpeakerWiz(roots.speaker, {
-      ...common,
-      width: roots.speaker.offsetWidth,
-      height: roots.speaker.offsetHeight,
+    const theme = currentThemeKey === 'custom' ? {
+      ...THEMES['neon-dark'],
+      waolSpeakerwiz: document.getElementById('col-core').value,
+      waolSpeakerwizRings: document.getElementById('col-rings').value,
+      waolSpeakerwizGlow: document.getElementById('col-glow').value,
+      bloom: document.getElementById('col-glow').value,
+      floorGlow: document.getElementById('col-glow').value,
+    } : currentThemeKey;
+
+    mainViz = new WaolSpeakerWiz(mainRoot, {
+      theme,
+      width: mainRoot.offsetWidth,
+      height: mainRoot.offsetHeight,
       speaker: { drivers: 3 },
-      waveform: false, eq: false
-    }).mount();
-    
-    // 2. Waveform (Standalone)
-    const iWave = new SpeakerWiz(roots.wave, {
-      ...common,
-      width: roots.wave.offsetWidth,
-      height: roots.wave.offsetHeight,
-      speaker: false, eq: false,
-      waveform: { mode: 'mirror', height: roots.wave.offsetHeight }
+      bpm,
+      pattern
     }).mount();
 
-    // 3. EQ (Standalone)
-    const iEQ = new SpeakerWiz(roots.eq, {
-      ...common,
-      width: roots.eq.offsetWidth,
-      height: roots.eq.offsetHeight,
-      speaker: false, waveform: false,
-      eq: { mode: 'filled-curve', bands: 32, height: roots.eq.offsetHeight }
-    }).mount();
-
-    // 4. Dynamic Effect (Standalone)
-    const effectOpts = { ...common, width: roots.effect.offsetWidth, height: roots.effect.offsetHeight, speaker: false, waveform: false, eq: false };
-    if (activeEffect === 'particles') effectOpts.particles = { count: 400, speed: 1.5 };
-    else if (activeEffect === 'radial') effectOpts.radial = { mode: 'bars', innerRadius: 100, radius: 200 };
-    else if (activeEffect === 'geometric3d') effectOpts.geometric3d = { type: 'sphere' };
-    else if (activeEffect === 'spectrogram') effectOpts.spectrogram = { height: effectOpts.height };
-
-    const iEffect = new SpeakerWiz(roots.effect, effectOpts).mount();
-
-    instances = [iSpeaker, iWave, iEQ, iEffect];
-    
-    // Synchronize
-    instances.forEach(i => {
-      i.setGains({ sub: gain, mid: gain*0.8, hi: gain*0.7 });
-      i.setPattern(pattern);
-      if (isPlaying) i.play();
-    });
-
-    document.getElementById('effect-name').textContent = activeEffect.replace('3d', ' 3D');
+    mainViz.setGains({ sub: gain, mid: gain*0.8, hi: gain*0.7 });
+    if (isPlaying) mainViz.play();
   };
 
-  // Initial Mount
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateDisplay);
-  } else {
-    updateDisplay();
-  }
-
-  // Responsive handling
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateDisplay, 250);
-  });
-
-  // Mode Selection
-  document.querySelectorAll('[data-effect]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-effect]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeEffect = btn.dataset.effect;
-      updateDisplay();
+  const initMinis = () => {
+    ['neon-dark', 'vapor', 'amber-studio', 'monochrome'].forEach(k => {
+      const root = document.getElementById(`mini-${k}`);
+      const v = new WaolSpeakerWiz(root, {
+        theme: k,
+        width: 120, height: 100,
+        speaker: { drivers: 1, subRadius: 35 },
+        autoPlay: true,
+        bpm: 128
+      }).mount();
+      minis.push(v);
     });
+  };
+
+  // Initial Load
+  window.addEventListener('load', () => {
+    updateMain();
+    initMinis();
   });
 
-  // Pattern Selection
-  document.querySelectorAll('[data-pattern]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-pattern]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      instances.forEach(i => i.setPattern(btn.dataset.pattern));
-    });
-  });
-
-  // Master Controls
+  // Controls
   document.getElementById('play-btn').addEventListener('click', (e) => {
     const isPlaying = e.target.textContent === '⏸';
-    instances.forEach(i => isPlaying ? i.pause() : i.play());
+    mainViz[isPlaying ? 'pause' : 'play']();
     e.target.textContent = isPlaying ? '▶' : '⏸';
   });
 
   document.getElementById('bpm-slider').addEventListener('input', (e) => {
-    const bpm = parseInt(e.target.value);
-    instances.forEach(i => i.setBPM(bpm));
-    document.getElementById('bpm-disp').textContent = bpm;
+    const v = parseInt(e.target.value);
+    mainViz.setBPM(v);
+    document.getElementById('bpm-val').textContent = v;
   });
 
   document.getElementById('gain-slider').addEventListener('input', (e) => {
     const v = parseInt(e.target.value) / 100;
-    instances.forEach(i => i.setGains({ sub: v, mid: v * 0.8, hi: v * 0.7 }));
+    mainViz.setGains({ sub: v, mid: v * 0.8, hi: v * 0.7 });
+    document.getElementById('gain-val').textContent = e.target.value + '%';
+  });
+
+  document.getElementById('pattern-select').addEventListener('change', (e) => {
+    mainViz.setPattern(e.target.value);
+  });
+
+  // Theme Selection
+  document.querySelectorAll('.widget').forEach(w => {
+    w.addEventListener('click', () => {
+      document.querySelectorAll('.widget').forEach(x => x.classList.remove('active'));
+      w.classList.add('active');
+      currentThemeKey = w.dataset.theme;
+      updateMain();
+    });
+  });
+
+  // Customizer
+  ['col-core', 'col-rings', 'col-glow'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      currentThemeKey = 'custom';
+      document.querySelectorAll('.widget').forEach(x => x.classList.remove('active'));
+      updateMain();
+    });
+  });
+
+  // Resize
+  let rt;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(updateMain, 300);
   });
 
 </script>

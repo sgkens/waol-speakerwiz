@@ -16,8 +16,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@speakerwiz/core": ["packages/core/src/index.ts"],
-      "@speakerwiz/core/*": ["packages/core/src/*"]
+      "@waol-speakerwiz/core": ["packages/core/src/index.ts"],
+      "@waol-speakerwiz/core/*": ["packages/core/src/*"]
     }
   },
   "include": ["packages/**/*.ts", "packages/**/*.tsx", "demo/**/*.ts", "demo/**/*.tsx"]

@@ -1,24 +1,24 @@
-# 🔊 SpeakerWiz (Core)
+# 🔊 WaolSpeakerWiz (Core)
 
 **High-Performance, Physics-Simulated Audio Visualization for the Web**
 
-This is the vanilla TypeScript core package for SpeakerWiz.
+This is the vanilla TypeScript core package for WaolSpeakerWiz.
 
 ## Installation
 
 ```bash
-npm i @speakerwiz/core
+npm i @waol-speakerwiz/core
 # or
-bun add @speakerwiz/core
+bun add @waol-speakerwiz/core
 ```
 
 ## Quick Start
 
 ```typescript
-import { SpeakerWiz } from '@speakerwiz/core'
+import { WaolSpeakerWiz } from '@waol-speakerwiz/core'
 
 const root = document.getElementById('viz-container')
-const viz = new SpeakerWiz(root, {
+const viz = new WaolSpeakerWiz(root, {
   theme: 'neon-dark',
   speaker: { drivers: 3 },
   waveform: { mode: 'mirror', height: 100 },
@@ -37,4 +37,4 @@ viz.mount()
 - **3D Wireframe Geometry** (Torus, Sphere, Cube)
 - **Radial & Circular Spectrum Rings**
 
-For React bindings, see [`@speakerwiz/react`](https://www.npmjs.com/package/@speakerwiz/react).
+For React bindings, see [`@waol-speakerwiz/react`](https://www.npmjs.com/package/@waol-speakerwiz/react).

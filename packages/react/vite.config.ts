@@ -4,13 +4,13 @@ import { resolve } from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@speakerwiz/core': resolve(__dirname, '../core/src'),
+      '@waol-speakerwiz/core': resolve(__dirname, '../core/src'),
     },
   },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'SpeakerWizReact',
+      name: 'WaolSpeakerWizReact',
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {

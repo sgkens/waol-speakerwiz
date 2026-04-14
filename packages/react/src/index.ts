@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/react  —  index.ts (public barrel)
+// @waol-speakerwiz/react  —  index.ts (public barrel)
 // ─────────────────────────────────────────────────────────────────
 
-export * from './SpeakerWiz'
+export * from './WaolSpeakerWiz'
 export * from './components'
 export * from './hooks'

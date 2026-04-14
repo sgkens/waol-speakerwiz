@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  physics/BeatSequencer.ts
+// @waol-speakerwiz/core  —  physics/BeatSequencer.ts
 // BPM-locked 16/32-step sequencer with typed event emitter
 // ─────────────────────────────────────────────────────────────────
 

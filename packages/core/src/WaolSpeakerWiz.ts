@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  SpeakerWiz.ts
+// @waol-speakerwiz/core  —  WaolSpeakerWiz.ts
 // Main orchestrator. Wires SpringEngine + BeatSequencer +
-// AudioAnalyser + all renderers into one cohesive instance.
+// AudioAnalyser + SpeakerRenderer into one cohesive instance.
 // ─────────────────────────────────────────────────────────────────
 
 import { SpringEngine }    from './physics/SpringEngine'
@@ -9,17 +9,11 @@ import { BeatSequencer, PATTERNS } from './physics/BeatSequencer'
 import { AudioAnalyser }   from './audio/AudioAnalyser'
 import { SpeakerRenderer } from './renderers/SpeakerRenderer'
 import { GlowRenderer }    from './renderers/GlowRenderer'
-import { WaveformRenderer } from './renderers/WaveformRenderer'
-import { EQRenderer }      from './renderers/EQRenderer'
-import { SpectrogramRenderer } from './renderers/SpectrogramRenderer'
-import { ParticleRenderer } from './renderers/ParticleRenderer'
-import { Geometric3DRenderer } from './renderers/Geometric3DRenderer'
-import { RadialRenderer } from './renderers/RadialRenderer'
 import { resolveTheme }    from './themes'
 
 import type {
-  SpeakerWizOptions,
-  SpeakerWizTheme,
+  WaolSpeakerWizOptions,
+  WaolSpeakerWizTheme,
   BuiltInTheme,
   DriverGains,
   BeatHit,
@@ -27,28 +21,18 @@ import type {
   BuiltInPattern,
   RenderState,
   SpringState,
-  SpeakerWizEventMap,
-  SpeakerWizEventHandler,
+  WaolSpeakerWizEventMap,
+  WaolSpeakerWizEventHandler,
   StepHit,
-  SpectrogramOptions,
-  ParticleOptions,
-  Geometric3DOptions,
-  RadialOptions,
 } from './types'
 
 // ─────────────────────────────────────────────────────────────────
 
-const DEFAULTS: Required<SpeakerWizOptions> = {
+const DEFAULTS: Required<WaolSpeakerWizOptions> = {
   width:           620,
   height:          560,
   theme:           'neon-dark',
   speaker:         {},
-  waveform:        { mode: 'mirror', height: 72 },
-  eq:              { mode: 'bars', bands: 32, height: 96, showLabels: true, peakHold: true },
-  spectrogram:     false,
-  particles:       false,
-  geometric3d:     false,
-  radial:          false,
   physics:         {},
   gains:           { sub: 0.85, mid: 0.70, hi: 0.60 },
   bpm:             128,
@@ -58,46 +42,34 @@ const DEFAULTS: Required<SpeakerWizOptions> = {
 }
 
 type EventHandlers = {
-  [K in keyof SpeakerWizEventMap]: Set<SpeakerWizEventHandler<K>>
+  [K in keyof WaolSpeakerWizEventMap]: Set<WaolSpeakerWizEventHandler<K>>
 }
 
 // ─────────────────────────────────────────────────────────────────
 
-export class SpeakerWiz {
+export class WaolSpeakerWiz {
   // ── Modules ──
   private engine:   SpringEngine
   private seq:      BeatSequencer
   private analyser: AudioAnalyser | null = null
 
   // ── Renderers ──
-  private speaker:     SpeakerRenderer  | null = null
-  private glow:        GlowRenderer     | null = null
-  private waveform:    WaveformRenderer | null = null
-  private eq:          EQRenderer       | null = null
-  private spectrogram: SpectrogramRenderer | null = null
-  private particles:   ParticleRenderer | null = null
-  private geometric3d: Geometric3DRenderer | null = null
-  private radial:      RadialRenderer | null = null
+  private speaker:  SpeakerRenderer  | null = null
+  private glow:     GlowRenderer     | null = null
 
   // ── DOM ──
   private root:           HTMLElement
   private stageEl:        HTMLDivElement | null  = null
   private svgEl:          SVGSVGElement  | null  = null
   private glowCanvas:     HTMLCanvasElement | null = null
-  private waveCanvas:     HTMLCanvasElement | null = null
-  private eqCanvas:       HTMLCanvasElement | null = null
-  private spectroCanvas:  HTMLCanvasElement | null = null
-  private particleCanvas: HTMLCanvasElement | null = null
-  private geometricCanvas: HTMLCanvasElement | null = null
-  private radialCanvas:   HTMLCanvasElement | null = null
 
   // ── State ──
-  private theme:   SpeakerWizTheme
-  private opts:    Required<SpeakerWizOptions>
+  private theme:   WaolSpeakerWizTheme
+  private opts:    Required<WaolSpeakerWizOptions>
   private gains:   DriverGains
-  private rafId:   number  = 0
-  private lastT:   number  = 0
-  private mounted: boolean = false
+  private mounted  = false
+  private rafId    = 0
+  private lastT    = 0
   private handlers: Partial<EventHandlers> = {}
 
   // Idle micro-wobble
@@ -105,7 +77,7 @@ export class SpeakerWiz {
 
   private resizeObserver: ResizeObserver | null = null
 
-  constructor(container: HTMLElement, opts: SpeakerWizOptions = {}) {
+  constructor(container: HTMLElement, opts: WaolSpeakerWizOptions = {}) {
     this.root = container
     this.opts = { ...DEFAULTS, ...opts }
     this.theme = resolveTheme(this.opts.theme)
@@ -154,13 +126,8 @@ export class SpeakerWiz {
     this.root.style.position = 'relative'
     this.root.style.display  = 'inline-block'
 
-    const W   = this.opts.width
     const dpr = this.opts.devicePixelRatio
-
-    // Calculate total height: speaker + waveform + eq + others
-    const waveH = this.opts.waveform ? (this.opts.waveform as any).height ?? 72 : 0
-    const eqH   = this.opts.eq       ? (this.opts.eq       as any).height ?? 96 : 0
-    const spectroH = this.opts.spectrogram ? (this.opts.spectrogram as any).height ?? 160 : 0
+    const W   = this.opts.width
     const speakerH = this.opts.height
 
     // ── Stage (speaker area) ──
@@ -186,78 +153,10 @@ export class SpeakerWiz {
       this.stageEl.appendChild(this.glowCanvas)
     }
 
-    // ── Particles canvas (under speaker) ──
-    if (this.opts.particles !== false) {
-      this.particleCanvas = document.createElement('canvas')
-      this.particleCanvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;`
-      this.particles = new ParticleRenderer(this.particleCanvas, this.opts.particles as any, this.theme, dpr)
-      this.particles.resize(W, speakerH)
-      this.stageEl.insertBefore(this.particleCanvas, this.svgEl)
-    }
-
-    // ── Radial canvas (around speaker) ──
-    if (this.opts.radial !== false) {
-      this.radialCanvas = document.createElement('canvas')
-      this.radialCanvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;`
-      this.radial = new RadialRenderer(this.radialCanvas, this.opts.radial as any, this.theme, dpr)
-      this.radial.resize(W, speakerH)
-      this.stageEl.appendChild(this.radialCanvas)
-    }
-
-    // ── Geometric 3D canvas (around speaker) ──
-    if (this.opts.geometric3d !== false) {
-      this.geometricCanvas = document.createElement('canvas')
-      this.geometricCanvas.style.cssText = `position:absolute;top:0;left:0;pointer-events:none;`
-      this.geometric3d = new Geometric3DRenderer(this.geometricCanvas, this.opts.geometric3d as any, this.theme, dpr)
-      this.geometric3d.resize(W, speakerH)
-      this.stageEl.appendChild(this.geometricCanvas)
-    }
-
     this.root.appendChild(this.stageEl)
 
-    // ── Waveform canvas ──
-    if (this.opts.waveform !== false) {
-      this.waveCanvas = document.createElement('canvas')
-      this.waveCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
-      this.waveform = new WaveformRenderer(
-        this.waveCanvas,
-        this.opts.waveform as any,
-        this.theme,
-        dpr
-      )
-      this.waveform.resize(W, waveH)
-      this.root.appendChild(this.waveCanvas)
-    }
-
-    // ── EQ canvas ──
-    if (this.opts.eq !== false) {
-      this.eqCanvas = document.createElement('canvas')
-      this.eqCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
-      this.eq = new EQRenderer(
-        this.eqCanvas,
-        this.opts.eq as any,
-        this.theme,
-        dpr
-      )
-      this.eq.resize(W, eqH)
-      this.root.appendChild(this.eqCanvas)
-    }
-
-    // ── Spectrogram canvas ──
-    if (this.opts.spectrogram !== false) {
-      this.spectroCanvas = document.createElement('canvas')
-      this.spectroCanvas.style.cssText = `display:block;width:${W}px;pointer-events:none;`
-      this.spectrogram = new SpectrogramRenderer(
-        this.spectroCanvas,
-        this.opts.spectrogram as any,
-        this.theme,
-        dpr
-      )
-      this.spectrogram.resize(W, spectroH)
-      this.root.appendChild(this.spectroCanvas)
-    }
-
     this.mounted = true
+    this.resizeObserver?.observe(this.root)
 
     // Start render loop
     this.loop(performance.now())
@@ -274,30 +173,12 @@ export class SpeakerWiz {
     this.analyser?.destroy()
     this.speaker?.destroy()
     this.glow?.destroy()
-    this.waveform?.destroy()
-    this.eq?.destroy()
-    this.spectrogram?.destroy()
-    this.particles?.destroy?.()
-    this.geometric3d?.destroy?.()
-    this.radial?.destroy?.()
 
     // ── Modules ──
     this.speaker     = null
     this.glow        = null
-    this.waveform    = null
-    this.eq          = null
-    this.spectrogram = null
-    this.particles   = null
-    this.geometric3d = null
-    this.radial      = null
 
     this.stageEl?.remove()
-    this.waveCanvas?.remove()
-    this.eqCanvas?.remove()
-    this.spectroCanvas?.remove()
-    this.particleCanvas?.remove()
-    this.geometricCanvas?.remove()
-    this.radialCanvas?.remove()
 
     this.mounted  = false
     this.handlers = {}
@@ -353,16 +234,10 @@ export class SpeakerWiz {
     return this
   }
 
-  setTheme(theme: SpeakerWizTheme | BuiltInTheme): this {
+  setTheme(theme: WaolSpeakerWizTheme | BuiltInTheme): this {
     this.theme = resolveTheme(theme)
     this.speaker?.setTheme(this.theme)
     this.glow?.setTheme(this.theme)
-    this.waveform?.setTheme(this.theme)
-    this.eq?.setTheme(this.theme)
-    this.spectrogram?.setTheme(this.theme)
-    this.particles?.setTheme(this.theme)
-    this.geometric3d?.setTheme(this.theme)
-    this.radial?.setTheme(this.theme)
     return this
   }
 
@@ -371,19 +246,10 @@ export class SpeakerWiz {
 
     this.opts.width  = w
     this.opts.height = h
-    const waveH = this.opts.waveform ? (this.opts.waveform as any).height ?? 72 : 0
-    const eqH   = this.opts.eq       ? (this.opts.eq as any).height ?? 96 : 0
-    const spectroH = this.opts.spectrogram ? (this.opts.spectrogram as any).height ?? 160 : 0
 
     if (this.stageEl)  { this.stageEl.style.width = `${w}px`; this.stageEl.style.height = `${h}px` }
     if (this.svgEl)    { this.svgEl.setAttribute('width', String(w)); this.svgEl.setAttribute('height', String(h)) }
     if (this.glow)     this.glow.resize(w, h)
-    if (this.waveform && this.waveCanvas) this.waveform.resize(w, waveH)
-    if (this.eq && this.eqCanvas)         this.eq.resize(w, eqH)
-    if (this.spectrogram && this.spectroCanvas) this.spectrogram.resize(w, spectroH)
-    if (this.particles && this.particleCanvas)   this.particles.resize(w, h)
-    if (this.geometric3d && this.geometricCanvas) this.geometric3d.resize(w, h)
-    if (this.radial && this.radialCanvas)       this.radial.resize(w, h)
 
     this.emit('resize', { width: w, height: h })
     return this
@@ -391,7 +257,7 @@ export class SpeakerWiz {
 
   // ── Events ────────────────────────────────────────────────────────
 
-  on<K extends keyof SpeakerWizEventMap>(event: K, handler: SpeakerWizEventHandler<K>): this {
+  on<K extends keyof WaolSpeakerWizEventMap>(event: K, handler: WaolSpeakerWizEventHandler<K>): this {
     if (!this.handlers[event]) {
       (this.handlers as any)[event] = new Set()
     }
@@ -399,7 +265,7 @@ export class SpeakerWiz {
     return this
   }
 
-  off<K extends keyof SpeakerWizEventMap>(event: K, handler: SpeakerWizEventHandler<K>): this {
+  off<K extends keyof WaolSpeakerWizEventMap>(event: K, handler: WaolSpeakerWizEventHandler<K>): this {
     ;(this.handlers[event] as Set<any>)?.delete(handler)
     return this
   }
@@ -445,17 +311,6 @@ export class SpeakerWiz {
     // Update all renderers
     this.speaker?.update(renderState)
     this.glow?.update(renderState)
-    this.waveform?.update(renderState)
-    this.spectrogram?.update(renderState)
-    this.particles?.update(renderState)
-    this.geometric3d?.update(renderState)
-    this.radial?.update(renderState)
-
-    if (this.eq && this.analyser?.isConnected) {
-      this.eq.update(renderState, this.analyser.sampleRate)
-    } else {
-      this.eq?.update(renderState)
-    }
 
     this.rafId = requestAnimationFrame(this.loop)
   }
@@ -469,7 +324,7 @@ export class SpeakerWiz {
     if (hit.h) this.engine.impulse('hi',  hit.h * this.gains.hi  * 20 * forceMul)
   }
 
-  private emit<K extends keyof SpeakerWizEventMap>(event: K, payload: SpeakerWizEventMap[K]): void {
+  private emit<K extends keyof WaolSpeakerWizEventMap>(event: K, payload: WaolSpeakerWizEventMap[K]): void {
     ;(this.handlers[event] as Set<any>)?.forEach((h: Function) => h(payload))
   }
 }

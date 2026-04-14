@@ -31,8 +31,8 @@
       </feMerge>
     </filter>
 
-    <!-- Sub speakerwiz radial gradient - neon cyan -->
-    <radialGradient id="sub-speakerwiz-grad" cx="50%" cy="50%" r="50%">
+    <!-- Sub waol-speakerwiz radial gradient - neon cyan -->
+    <radialGradient id="sub-waol-speakerwiz-grad" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#001a22"/>
       <stop offset="35%" stop-color="#0a3a4a"/>
       <stop offset="60%" stop-color="#0e5a72" stop-opacity="0.9"/>
@@ -46,8 +46,8 @@
       <stop offset="100%" stop-color="#001520"/>
     </radialGradient>
 
-    <!-- Mid speakerwiz gradient -->
-    <radialGradient id="mid-speakerwiz-grad" cx="50%" cy="50%" r="50%">
+    <!-- Mid waol-speakerwiz gradient -->
+    <radialGradient id="mid-waol-speakerwiz-grad" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#111"/>
       <stop offset="50%" stop-color="#1a1a1a"/>
       <stop offset="100%" stop-color="#0a0a0a"/>
@@ -79,7 +79,7 @@
       <stop offset="100%" stop-color="#222"/>
     </radialGradient>
 
-    <!-- Tweeter speakerwiz -->
+    <!-- Tweeter waol-speakerwiz -->
     <radialGradient id="tweeter-grad" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#222"/>
       <stop offset="70%" stop-color="#1a1a1a"/>
@@ -110,15 +110,15 @@
         transform-origin: 260px 255px;
         will-change: transform, opacity;
       }
-      .sub-speakerwiz-group {
+      .sub-waol-speakerwiz-group {
         transform-origin: 260px 255px;
         will-change: transform;
       }
-      .mid-speakerwiz-group-l {
+      .mid-waol-speakerwiz-group-l {
         transform-origin: 100px 225px;
         will-change: transform;
       }
-      .mid-speakerwiz-group-r {
+      .mid-waol-speakerwiz-group-r {
         transform-origin: 420px 225px;
         will-change: transform;
       }
@@ -145,19 +145,19 @@
         50% { opacity: 0.7; }
       }
 
-      .sub-speakerwiz-group { animation: sub-idle 2.8s ease-in-out infinite; }
+      .sub-waol-speakerwiz-group { animation: sub-idle 2.8s ease-in-out infinite; }
       .neon-ring { animation: ring-pulse-idle 2.8s ease-in-out infinite; }
       .glow-layer { animation: glow-breathe 2.8s ease-in-out infinite; }
 
       /* Beat hit classes applied via JS */
-      .beat-sub .sub-speakerwiz-group {
+      .beat-sub .sub-waol-speakerwiz-group {
         animation: sub-beat 0.12s ease-out forwards, sub-idle 2.8s ease-in-out 0.12s infinite;
       }
       .beat-sub .neon-ring {
         animation: ring-beat 0.15s ease-out forwards, ring-pulse-idle 2.8s ease-in-out 0.15s infinite;
       }
-      .beat-mid .mid-speakerwiz-group-l,
-      .beat-mid .mid-speakerwiz-group-r {
+      .beat-mid .mid-waol-speakerwiz-group-l,
+      .beat-mid .mid-waol-speakerwiz-group-r {
         animation: mid-beat 0.1s ease-out forwards;
       }
       .beat-hi .tweeter-l,
@@ -219,20 +219,20 @@
   </g>
 
   <!-- LEFT MID-WOOFER -->
-  <g class="mid-speakerwiz-group-l">
+  <g class="mid-waol-speakerwiz-group-l">
     <!-- Outer rim -->
     <circle cx="100" cy="270" r="52" fill="#0d0d0d" stroke="#333" stroke-width="1.5"/>
     <!-- Surround ring -->
     <circle cx="100" cy="270" r="48" fill="none" stroke="#2a2a2a" stroke-width="3"/>
-    <!-- SpeakerWiz rings -->
+    <!-- WaolSpeakerWiz rings -->
     <circle cx="100" cy="270" r="44" fill="#111" stroke="#1e1e1e" stroke-width="1"/>
-    <circle cx="100" cy="270" r="38" fill="url(#mid-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
+    <circle cx="100" cy="270" r="38" fill="url(#mid-waol-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
     <circle cx="100" cy="270" r="30" fill="#131313" stroke="#1e1e1e" stroke-width="0.8"/>
     <circle cx="100" cy="270" r="22" fill="#101010" stroke="#1a1a1a" stroke-width="0.8"/>
     <!-- Dust cap -->
     <circle cx="100" cy="270" r="14" fill="#191919" stroke="#222" stroke-width="1"/>
     <circle cx="100" cy="270" r="7" fill="#151515"/>
-    <!-- SpeakerWiz texture lines -->
+    <!-- WaolSpeakerWiz texture lines -->
     <circle cx="100" cy="270" r="34" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
     <circle cx="100" cy="270" r="26" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
     <circle cx="100" cy="270" r="18" fill="none" stroke="#161616" stroke-width="0.5" opacity="0.6"/>
@@ -259,11 +259,11 @@
   </g>
 
   <!-- RIGHT MID-WOOFER -->
-  <g class="mid-speakerwiz-group-r">
+  <g class="mid-waol-speakerwiz-group-r">
     <circle cx="420" cy="270" r="52" fill="#0d0d0d" stroke="#333" stroke-width="1.5"/>
     <circle cx="420" cy="270" r="48" fill="none" stroke="#2a2a2a" stroke-width="3"/>
     <circle cx="420" cy="270" r="44" fill="#111" stroke="#1e1e1e" stroke-width="1"/>
-    <circle cx="420" cy="270" r="38" fill="url(#mid-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
+    <circle cx="420" cy="270" r="38" fill="url(#mid-waol-speakerwiz-grad)" stroke="#1a1a1a" stroke-width="1"/>
     <circle cx="420" cy="270" r="30" fill="#131313" stroke="#1e1e1e" stroke-width="0.8"/>
     <circle cx="420" cy="270" r="22" fill="#101010" stroke="#1a1a1a" stroke-width="0.8"/>
     <circle cx="420" cy="270" r="14" fill="#191919" stroke="#222" stroke-width="1"/>
@@ -325,8 +325,8 @@
   <circle cx="260" cy="255" r="122" fill="none" stroke="#2ae8ff" stroke-width="1.2" opacity="0.5" filter="url(#soft-glow)" class="neon-ring sub-ring"/>
   <circle cx="260" cy="255" r="120" fill="none" stroke="#0e7a9e" stroke-width="0.8" opacity="0.8" class="neon-ring sub-ring"/>
 
-  <!-- Sub speakerwiz group - all animated together on beat -->
-  <g class="sub-speakerwiz-group">
+  <!-- Sub waol-speakerwiz group - all animated together on beat -->
+  <g class="sub-waol-speakerwiz-group">
     <!-- Surround area fill -->
     <circle cx="260" cy="255" r="115" fill="url(#sub-surround-grad)"/>
 
@@ -335,10 +335,10 @@
     <circle cx="260" cy="255" r="108" fill="none" stroke="#0e6a8a" stroke-width="1" opacity="0.7"/>
     <circle cx="260" cy="255" r="104" fill="none" stroke="#2ae8ff" stroke-width="0.8" opacity="0.35" class="neon-ring"/>
 
-    <!-- SpeakerWiz body -->
-    <circle cx="260" cy="255" r="100" fill="url(#sub-speakerwiz-grad)"/>
+    <!-- WaolSpeakerWiz body -->
+    <circle cx="260" cy="255" r="100" fill="url(#sub-waol-speakerwiz-grad)"/>
 
-    <!-- SpeakerWiz texture rings - neon cyan -->
+    <!-- WaolSpeakerWiz texture rings - neon cyan -->
     <circle cx="260" cy="255" r="98" fill="none" stroke="#2ae8ff" stroke-width="1.2" opacity="0.55" class="neon-ring" filter="url(#soft-glow)"/>
     <circle cx="260" cy="255" r="92" fill="none" stroke="#1a90b8" stroke-width="0.8" opacity="0.6"/>
     <circle cx="260" cy="255" r="86" fill="none" stroke="#2ae8ff" stroke-width="1" opacity="0.45" class="neon-ring" filter="url(#soft-glow)"/>
@@ -360,7 +360,7 @@
     <circle cx="260" cy="255" r="18" fill="#00060c"/>
     <circle cx="260" cy="255" r="14" fill="#000408" stroke="#061820" stroke-width="0.5"/>
 
-    <!-- Glow layer overlay on speakerwiz -->
+    <!-- Glow layer overlay on waol-speakerwiz -->
     <circle cx="260" cy="255" r="100" fill="none" stroke="#2ae8ff" stroke-width="8" opacity="0.04" class="glow-layer" filter="url(#neon-glow-strong)"/>
     <circle cx="260" cy="255" r="80" fill="none" stroke="#2ae8ff" stroke-width="4" opacity="0.06" class="glow-layer" filter="url(#neon-glow)"/>
   </g>
@@ -386,11 +386,11 @@
     (function() {
       const svg = document.currentScript.closest('svg') || document.getElementById('speaker-viz');
 
-      const subSpeakerWiz     = svg.querySelector('.sub-speakerwiz-group');
+      const subWaolSpeakerWiz     = svg.querySelector('.sub-waol-speakerwiz-group');
       const neonRings   = svg.querySelectorAll('.neon-ring');
       const subRings    = svg.querySelectorAll('.sub-ring');
-      const midL        = svg.querySelector('.mid-speakerwiz-group-l');
-      const midR        = svg.querySelector('.mid-speakerwiz-group-r');
+      const midL        = svg.querySelector('.mid-waol-speakerwiz-group-l');
+      const midR        = svg.querySelector('.mid-waol-speakerwiz-group-r');
       const tweeterEls  = svg.querySelectorAll('.tweeter-l, .tweeter-r');
 
       let idleActive = true;
@@ -428,9 +428,9 @@
         const ringBright = 0.3 + sub * 0.7;
 
         // SUB
-        if (subSpeakerWiz) {
-          subSpeakerWiz.style.transition = 'none';
-          subSpeakerWiz.style.transform  = `scale(${subScale})`;
+        if (subWaolSpeakerWiz) {
+          subWaolSpeakerWiz.style.transition = 'none';
+          subWaolSpeakerWiz.style.transform  = `scale(${subScale})`;
         }
         setNeonOpacity(neonRings, neonBright);
         setNeonOpacity(subRings,  ringBright);
@@ -449,7 +449,7 @@
         const releaseMs = 80 + (1 - sub) * 60;
         beatFrame = requestAnimationFrame(() => {
           beatFrame = requestAnimationFrame(() => {
-            if (subSpeakerWiz) releaseTransform(subSpeakerWiz, releaseMs + 40);
+            if (subWaolSpeakerWiz) releaseTransform(subWaolSpeakerWiz, releaseMs + 40);
             if (midL)    releaseTransform(midL,    releaseMs);
             if (midR)    releaseTransform(midR,    releaseMs);
             tweeterEls.forEach(t => releaseTransform(t, releaseMs - 20));

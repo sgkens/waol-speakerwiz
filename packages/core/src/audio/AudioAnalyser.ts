@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  audio/AudioAnalyser.ts
+// @waol-speakerwiz/core  —  audio/AudioAnalyser.ts
 // Web Audio API AnalyserNode wrapper with band energy extraction
 // and MediaElement bridge support
 // ─────────────────────────────────────────────────────────────────

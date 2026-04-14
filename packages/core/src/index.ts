@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────
-// @speakerwiz/core  —  index.ts  (public barrel)
+// @waol-speakerwiz/core  —  index.ts (public barrel)
 // ─────────────────────────────────────────────────────────────────
 
 // Types
@@ -8,11 +8,10 @@ export type {
   SpringDriverConfig, SpringConfig, SpringDriverState, SpringState,
   StepHit, BeatPattern, StepEvent, BeatEvent, BuiltInPattern,
   BandEnergy, AnalyserOptions,
-  BuiltInTheme, SpeakerWizTheme,
-  SpeakerOptions, WaveformOptions, WaveformMode, EQOptions, EQMode,
-  SpectrogramOptions, SpectrogramMode, ParticleOptions, Geometric3DOptions, RadialOptions,
-  SpeakerWizOptions, RenderState,
-  SpeakerWizEventMap, SpeakerWizEventHandler,
+  BuiltInTheme, WaolSpeakerWizTheme,
+  SpeakerOptions,
+  WaolSpeakerWizOptions, RenderState,
+  WaolSpeakerWizEventMap, WaolSpeakerWizEventHandler,
 } from './types'
 
 // Physics
@@ -25,15 +24,9 @@ export { AudioAnalyser } from './audio/AudioAnalyser'
 // Renderers
 export { SpeakerRenderer } from './renderers/SpeakerRenderer'
 export { GlowRenderer }    from './renderers/GlowRenderer'
-export { WaveformRenderer } from './renderers/WaveformRenderer'
-export { EQRenderer }       from './renderers/EQRenderer'
-export { SpectrogramRenderer } from './renderers/SpectrogramRenderer'
-export { ParticleRenderer } from './renderers/ParticleRenderer'
-export { Geometric3DRenderer } from './renderers/Geometric3DRenderer'
-export { RadialRenderer } from './renderers/RadialRenderer'
 
 // Orchestrator
-export { SpeakerWiz } from './SpeakerWiz'
+export { WaolSpeakerWiz } from './WaolSpeakerWiz'
 
 // Themes
 export { THEMES, resolveTheme } from './themes'
